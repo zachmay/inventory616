@@ -1,7 +1,7 @@
 ---
     php_ppa: php5-5.6
     doc_root: /web
-    sys_packages: ["vim"]
+    sys_packages: ["vim","git"]
     dist: precise
     php_packages: ["php5-mcrypt","php5-mysql","php5-xdebug"]
     pecl_packages: []
