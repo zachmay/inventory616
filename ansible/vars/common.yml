@@ -3,5 +3,5 @@
     doc_root: /web
     sys_packages: ["vim"]
     dist: precise
-    php_packages: ["php5-mcrypt","php5-mbstring","php5-mysql","php5-xdebug"]
+    php_packages: ["php5-mcrypt","php5-mysql","php5-xdebug"]
     pecl_packages: []
