@@ -1,0 +1,5 @@
+mysql:
+    root_password: vagrant
+    user: vagrant
+    password: vagrant
+    database: inventory
