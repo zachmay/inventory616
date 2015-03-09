@@ -11,7 +11,7 @@
     ServerAlias {{ servername }}
 {% endif %}
 {% endfor %}
-    DirectoryIndex public/index.php
+    DirectoryIndex index.php
 
     <Directory {{ doc_root }}>
         AllowOverride All
@@ -22,6 +22,6 @@
 
         RewriteCond %{REQUEST_FILENAME} !-d
         RewriteCond %{REQUEST_FILENAME} !-f
-        RewriteRule ^ public/index.php [L]
+        RewriteRule ^(.*)$ index.php [L]
     </Directory>
 </VirtualHost>
