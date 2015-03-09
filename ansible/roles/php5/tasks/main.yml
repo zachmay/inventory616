@@ -6,3 +6,9 @@
   lineinfile: dest=/etc/php5/apache2/php.ini
               regexp='date.timezone ='
               line='date.timezone = {{ timezone }}'
+
+- name: enable error reporting in apache2 php.ini
+  lineinfile: dest=/etc/php5/apache2/php.ini
+              regexp='display_errors ='
+              line='display_errors = On'
+
