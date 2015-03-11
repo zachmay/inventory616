@@ -17,6 +17,7 @@ class CreateDatabase extends Migration {
             $table->increments('id');
             $table->string('name');
             $table->string('description');
+            $table->timestamps();
         });
 
         Schema::create('rooms', function(Blueprint $table)
@@ -25,6 +26,7 @@ class CreateDatabase extends Migration {
             $table->string('name');
             $table->string('description');
             $table->integer('building_id')->unsigned();
+            $table->timestamps();
 
             $table->foreign('building_id')->references('id')->on('buildings');
         });
@@ -33,44 +35,40 @@ class CreateDatabase extends Migration {
         {
             $table->increments('id');
             $table->string('name');
-        });
-
-        Schema::create('attribute_types', function(Blueprint $table)
-        {
-            $table->increments('id');
-            $table->string('name');
-            $table->enum('input', ['text', 'numeric', 'checkbox']);
-        });
-
-        Schema::create('item_type_attributes', function (Blueprint $table)
-        {
-            $table->increments('id');
-            $table->integer('item_type_id')->unsigned();
-            $table->integer('attribute_type_id')->unsigned();
-
-            $table->foreign('item_type_id')->references('id')->on('item_types');
-            $table->foreign('attribute_type_id')->references('id')->on('attribute_types');
+            $table->timestamps();
         });
 
         Schema::create('items', function(Blueprint $table)
         {
             $table->increments('id');
+            $table->string('asset_tag');
             $table->string('name');
+            $table->string('funding_source');
             $table->integer('item_type_id')->unsigned();
-            $table->datetime('deleted_at');
+            $table->string('model');
+            $table->string('cpu');
+            $table->string('ram');
+            $table->string('hard_disk');
+            $table->string('os');
+            $table->boolean('administrator_flag');
+            $table->boolean('teacher_flag');
+            $table->boolean('student_flag');
+            $table->boolean('institution_flag');
+            $table->timestamps();
 
+            $table->unique('asset_tag');
             $table->foreign('item_type_id')->references('id')->on('item_types');
         });
 
-        Schema::create('item_attributes', function(Blueprint $table)
+        Schema::create('check_ins', function(Blueprint $table)
         {
             $table->increments('id');
-            $table->string('value');
+            $table->integer('room_id')->unsigned();
             $table->integer('item_id')->unsigned();
-            $table->integer('attribute_type_id')->unsigned();
+            $table->timestamps();
 
+            $table->foreign('room_id')->references('id')->on('rooms');
             $table->foreign('item_id')->references('id')->on('items');
-            $table->foreign('attribute_type_id')->references('id')->on('attribute_types');
         });
     }
 
@@ -81,10 +79,8 @@ class CreateDatabase extends Migration {
      */
     public function down()
     {
-        Schema::drop('item_attributes');
+        Schema::drop('check_ins');
         Schema::drop('items');
-        Schema::drop('item_type_attributes');
-        Schema::drop('attribute_types');
         Schema::drop('item_types');
         Schema::drop('rooms');
         Schema::drop('buildings');
