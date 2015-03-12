@@ -3,8 +3,13 @@
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Eloquent\Model;
 
-class DatabaseSeeder extends Seeder {
+use App\Building;
+use App\Room;
+use App\ItemType;
+use App\Item;
 
+class DatabaseSeeder extends Seeder
+{
 	/**
 	 * Run the database seeds.
 	 *
@@ -14,7 +19,87 @@ class DatabaseSeeder extends Seeder {
 	{
 		Model::unguard();
 
-		// $this->call('UserTableSeeder');
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        
+		$this->call('FacilitiesSeeder');
+        $this->call('ItemSeeder');
+
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 	}
 
+}
+
+class FacilitiesSeeder extends Seeder
+{
+    public function run()
+    {
+        DB::table('rooms')->delete();
+        DB::table('buildings')->delete();
+
+
+        $pchs = Building::create(['name' => 'PCHS', 'description' => 'Powell Co. High School']);
+        Room::create(['name' => 'Room 101', 'description' => 'Mr. Smith', 'building_id' => $pchs->id]);
+        Room::create(['name' => 'Room 102', 'description' => 'Mrs. Jones', 'building_id' => $pchs->id]);
+
+        $pcms    = Building::create(['name' => 'PCMS',      'description' => 'Powell Co. Middle School']);
+        Room::create(['name' => 'Room 11', 'description' => 'Mr. White', 'building_id' => $pcms->id]);
+        Room::create(['name' => 'Room 12', 'description' => 'Mrs. Black', 'building_id' => $pcms->id]);
+        Room::create(['name' => 'Gym', 'description' => 'Mrs. Green', 'building_id' => $pcms->id]);
+
+        $bowen   = Building::create(['name' => 'Bowen',     'description' => 'Bowen Elementary School']);
+        $city    = Building::create(['name' => 'Clay City', 'description' => 'Clay City Elementary']);
+        $stanton = Building::create(['name' => 'Stanton',   'description' => 'Stanton Elementary']);
+        $academy = Building::create(['name' => 'Academy',   'description' => 'Powell Co. Academy']);
+    }
+}
+
+class ItemTypesSeeder extends Seeder
+{
+    public function run()
+    {
+
+    }
+}
+
+class ItemSeeder extends Seeder
+{
+    public function run()
+    {
+        DB::table('items')->delete();
+        DB::table('item_types')->delete();
+
+        $comp = ItemType::create(['name' => 'Computer']);
+        $tab  = ItemType::create(['name' => 'Tablet']);
+        $proj = ItemType::create(['name' => 'Projector']);
+        $cam  = ItemType::create(['name' => 'Doc Camera']);
+        $int  = ItemType::create(['name' => 'Interactive']);
+
+        Item::create([
+            'asset_tag'          => 'ABC123',
+            'name'               => 'MacBook Pro',
+            'funding_source'     => 'Grant 1234A',
+            'item_type_id'       => $comp->id,
+            'model'              => 'MacBook Pro 2015',
+            'cpu'                => '2.2 GHz Quad-core',
+            'ram'                => '16GB',
+            'hard_disk'          => '512GB',
+            'os'                 => 'Mac OS X 10.10',
+            'administrator_flag' => true,
+            'teacher_flag'       => false,
+            'student_flag'       => false,
+            'institution_flag'   => false
+        ]);
+
+        Item::create([
+            'asset_tag'          => 'XYZ789',
+            'name'               => 'Projector',
+            'funding_source'     => 'Grant 1234B',
+            'item_type_id'       => $proj->id,
+            'model'              => 'ViewSonic PJD5132',
+            'administrator_flag' => false,
+            'teacher_flag'       => true,
+            'student_flag'       => false,
+            'institution_flag'   => false
+        ]);
+    }
 }
