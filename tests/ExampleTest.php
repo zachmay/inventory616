@@ -1,17 +1,18 @@
 <?php
 
-class ExampleTest extends TestCase {
+class IndexTest extends TestCase {
 
 	/**
-	 * A basic functional test example.
+	 * The default route ('/') should redirect to the login page.
 	 *
 	 * @return void
 	 */
-	public function testBasicExample()
+	public function testIndexRedirectsToLogin()
 	{
 		$response = $this->call('GET', '/');
 
-		$this->assertEquals(200, $response->getStatusCode());
+		$this->assertEquals(302, $response->getStatusCode());
+        $this->assertRedirectedTo('auth/login');
 	}
 
 }

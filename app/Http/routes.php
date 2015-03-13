@@ -11,11 +11,21 @@
 |
 */
 
-Route::get('/', 'WelcomeController@index');
-
-Route::get('home', 'HomeController@index');
+Route::get('/', 'HomeController@index');
 
 Route::controllers([
 	'auth' => 'Auth\AuthController',
 	'password' => 'Auth\PasswordController',
 ]);
+
+Route::group([
+    'prefix'     => 'api',
+    'namespace'  => 'Api',
+    'middleware' => 'auth.api'
+], function () {
+    Route::get('example', 'ExampleController@get');
+    Route::post('example', 'ExampleController@post');
+});
+
+
+
