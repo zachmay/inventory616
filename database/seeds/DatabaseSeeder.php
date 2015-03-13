@@ -4,9 +4,10 @@ use Illuminate\Database\Seeder;
 use Illuminate\Database\Eloquent\Model;
 
 use App\Building;
-use App\Room;
-use App\ItemType;
 use App\Item;
+use App\ItemType;
+use App\Room;
+use App\User;
 
 class DatabaseSeeder extends Seeder
 {
@@ -23,6 +24,7 @@ class DatabaseSeeder extends Seeder
         
 		$this->call('FacilitiesSeeder');
         $this->call('ItemSeeder');
+        $this->call('UserSeeder');
 
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 	}
@@ -50,14 +52,6 @@ class FacilitiesSeeder extends Seeder
         $city    = Building::create(['name' => 'Clay City', 'description' => 'Clay City Elementary']);
         $stanton = Building::create(['name' => 'Stanton',   'description' => 'Stanton Elementary']);
         $academy = Building::create(['name' => 'Academy',   'description' => 'Powell Co. Academy']);
-    }
-}
-
-class ItemTypesSeeder extends Seeder
-{
-    public function run()
-    {
-
     }
 }
 
@@ -102,4 +96,19 @@ class ItemSeeder extends Seeder
             'institution_flag'   => false
         ]);
     }
+}
+
+class UserSeeder extends Seeder
+{
+    public function run()
+    {
+        DB::table('users')->delete();
+
+        User::create([
+            'name'     => 'Test User',
+            'email'    => 'test@test.com',
+            'password' => Hash::make('test')
+        ]);
+    }
+
 }
