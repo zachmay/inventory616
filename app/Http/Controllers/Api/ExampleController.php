@@ -3,6 +3,9 @@
 use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Response;
+use Illuminate\Http\Request;
+
+use App\Item;
 
 class ExampleController extends Controller {
 
@@ -11,9 +14,11 @@ class ExampleController extends Controller {
 	 *
 	 * @return Response
 	 */
-	public function get()
+	public function get($itemId)
 	{
-		return [ 'a' => 1, 'b' => 2 ];
+        $item = Item::find($itemId);
+
+		return $item;
 	}
 
     public function post()

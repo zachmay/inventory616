@@ -23,7 +23,7 @@ Route::group([
     'namespace'  => 'Api',
     'middleware' => 'auth.api'
 ], function () {
-    Route::get('example', 'ExampleController@get');
+    Route::get('example/{itemId}', 'ExampleController@get');
     Route::post('example', 'ExampleController@post');
 });
 
