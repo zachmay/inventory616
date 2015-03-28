@@ -13,6 +13,7 @@ class CheckInController extends Controller {
 	 */
 	public function get()
 	{
+//		echo $tag;
 		return [ 'hahahah' => 1, 'b' => 2 ];
 	}
 
