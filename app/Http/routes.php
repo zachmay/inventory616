@@ -25,6 +25,8 @@ Route::group([
 ], function () {
     Route::get('example', 'ExampleController@get');
     Route::post('example', 'ExampleController@post');
+	//route for team6
+	Route::get('/inventory/:tag/history','CheckInController@get');
 });
 
 
