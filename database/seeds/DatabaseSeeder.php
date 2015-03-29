@@ -8,6 +8,7 @@ use App\Item;
 use App\ItemType;
 use App\Room;
 use App\User;
+use App\CheckIn;
 
 class DatabaseSeeder extends Seeder
 {
@@ -25,6 +26,7 @@ class DatabaseSeeder extends Seeder
 		$this->call('FacilitiesSeeder');
         $this->call('ItemSeeder');
         $this->call('UserSeeder');
+        $this->call('CheckinSeeder');
 
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 	}
@@ -95,6 +97,30 @@ class ItemSeeder extends Seeder
             'student_flag'       => false,
             'institution_flag'   => false
         ]);
+    }
+}
+
+class CheckinSeeder extends Seeder
+{
+    public function run()
+    {
+        DB::table('check_ins')->delete();
+
+		$rooms = Room::all();
+		$items = Item::all();
+		srand(1);
+		foreach($rooms as $room) {
+			foreach($items as $item) {
+				for($i = 0; $i < rand(1,4); $i++) {
+					CheckIn::create([
+						'room_id'	=> $room->id,
+						'item_id'	=> $item->id,
+						'created_at' => rand(time()/2,time())
+					]);
+				}
+			}
+		}
+        
     }
 }
 

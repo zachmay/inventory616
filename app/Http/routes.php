@@ -26,12 +26,13 @@ Route::group([
     Route::get('example', 'ExampleController@get');
     Route::post('example', 'ExampleController@post');
 	//route for team6
-//	Route::get('/inventory/:tag/history','CheckInController@get');
-	Route::get('/inventory/{tag?}/history',function($tag=null){
-	echo $tag;
+	Route::get('/inventory/{tag}/history','CheckInController@getHistory');
+	Route::get('/inventory/{tag}/history/latest','CheckInController@getHistoryLatest');
 
 
-});
+	//Route::get('inventory/{tag}/history',function($tag=null){
+//	echo $tag;
+	//});
 });
 
 
