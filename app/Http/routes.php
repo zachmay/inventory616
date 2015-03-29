@@ -32,10 +32,10 @@ Route::group([
     Route::get('inventory/{tag}','InventoryController2@show');
     Route::put('inventory/{tag}','InventoryController2@update');
     Route::delete('inventory/{tag}','InventoryController2@destroy');
-    Route::get('inventory/types','ItemTypeController@index');
 
+    Route::get('inventory-types','ItemTypeController@index');
 
-});
+    });
 
 
 
