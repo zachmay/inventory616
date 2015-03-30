@@ -28,11 +28,9 @@ Route::group([
 	//route for team6
 	Route::get('/inventory/{tag}/history','CheckInController@getHistory');
 	Route::get('/inventory/{tag}/history/latest','CheckInController@getHistoryLatest');
+	Route::get('/inventory/{tag}/history/{num}','CheckInController@getHistoryByNum');
 
 
-	//Route::get('inventory/{tag}/history',function($tag=null){
-//	echo $tag;
-	//});
 });
 
 
