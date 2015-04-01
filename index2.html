@@ -1,0 +1,35 @@
+<html>
+      
+		  
+          <head>
+			  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+			 <script src="js/underscore.js"></script>
+           <script src="js/jquery-1.11.2.js"></script>
+              <script src="js/backbone.js"></script>
+          
+          </head>
+	 <body>
+		 <h2>INVENTORY SYSTEM- POWELL COUNTY SCHOOLS</h2>
+<table class='table'>
+	<thead>
+		<tr>
+			<th>building</th>
+			<th>roomno</th>
+		</tr>
+		<tr>
+		<td><input class="form-control building-input"></td>
+		<td><input class="form-control roomno-input"></td>
+			<td><button class="btn btn-primary add-create">Add</button></td>
+		</tr>
+	</thead>
+	<tbody class="facilities"></tbody>
+		 </table>
+		 <script type="text/template" class="facilities-template">
+		 
+		 <td><span class="building"><%= building %></span></td>
+		  <td><span class="roomno"><%= roomno %></span></td>
+		  
+		 </script>
+		  <script src="sample2.js"></script>
+  </body>
+  </html>
