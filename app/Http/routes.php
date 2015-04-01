@@ -29,7 +29,7 @@ Route::group([
 	Route::get('/inventory/{tag}/history','CheckInController@getHistory');
 	Route::get('/inventory/{tag}/history/latest','CheckInController@getHistoryLatest');
 	Route::get('/inventory/{tag}/history/{num}','CheckInController@getHistoryByNum');
-
+	Route::post('/inventory/{tag}/history','CheckInController@postHistory');
 
 });
 

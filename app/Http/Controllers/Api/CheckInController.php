@@ -140,3 +140,12 @@ class CheckInController extends Controller {
 	}
 
 }
+    /**
+     * POST /inventory/:tag/history
+     * Create a new check-in resource for the specified option, 
+	 based on the data in the request body (in particular, the room ID).
+     */
+function postHistory($tag = null, Request $request){
+	echo "posted mother fucker";
+
+}
