@@ -78,8 +78,7 @@ class CheckInController extends Controller {
 		
 		try {
 			// get the item with the specified asset tag
-			$item = Item::where('asset_tag',$tag)->firstOrFail();
-			
+			$item = Item::where('asset_tag',$tag)->firstOrFail();		
 			// get the checkin entry for the item with given sequence number
 			$checkin = CheckIn::where('id',$num)->firstOrFail();
 			
@@ -138,14 +137,46 @@ class CheckInController extends Controller {
 		
 		return $response;
 	}
+function postHistory($tag=null, Request $request){
+	if($tag == null || trim($tag) == '')
+		return new Response(null,,400);
+	if(!Request::isMethod('post'))
+		return Response(null,404);
 
+	try{
+		if(Input::has('room_id')){
+			$room_id = Input::get('room_id');
+			$checked_in_data = CheckIn::all();
+			$item_type_table = DB::table('item_types')->where('name','=',Input::get('item_name'))->get();
+			$projector_id = $item_type_table[0]['id'];
+			srand(1);
+			foreach($checked_in_data as $data){
+				if(data->room_id == $room_id){
+					$array_of_elem = Input::all();
+					Item::create('asset_tag'          => $array_of_elem['asset_tag'],
+								 'name'               => $array_of_elem['name'],
+								 'funding_source'     => $array_of_elem['funding_source'],
+								 'item_type_id'       => $projector->id,
+								 'model'              => $array_of_elem['model'],
+								 'administrator_flag' => $array_of_elem['administrator_flag'],
+								 'teacher_flag'       => $array_of_elem['teacher_flag'],
+								 'student_flag'       => $array_of_elem['student_flag'],
+								 'institution_flag'   => $array_of_elem['institution_flag'])
+								 ]);
+					CheckIn::create(['room_id' => data->room_id,
+									'item_id' => DB::table('items')->where('asset_tag','=',$array_of_elem['asset_tag'])->get()[0]['id'],
+									'created_at' => rand(time()/2,time())])
+				}
+			}
+		}
+	}catch(ModelNotFoundException $excep){
+	  $response = new Response(null,400);
+	}
+	return $response;
+}
 }
     /**
      * POST /inventory/:tag/history
      * Create a new check-in resource for the specified option, 
 	 based on the data in the request body (in particular, the room ID).
      */
-function postHistory($tag = null, Request $request){
-	echo "posted mother fucker";
-
-}
