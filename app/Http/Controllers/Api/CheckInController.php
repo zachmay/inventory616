@@ -150,6 +150,7 @@ function postHistory($tag=null, Request $request){
 			$item_type_table = DB::table('item_types')->where('name','=',Input::get('item_name'))->get();
 			$projector_id = $item_type_table[0]['id'];
 			srand(1);
+			$set = 0;
 			foreach($checked_in_data as $data){
 				if(data->room_id == $room_id){
 					$array_of_elem = Input::all();
@@ -166,8 +167,14 @@ function postHistory($tag=null, Request $request){
 					CheckIn::create(['room_id' => data->room_id,
 									'item_id' => DB::table('items')->where('asset_tag','=',$array_of_elem['asset_tag'])->get()[0]['id'],
 									'created_at' => rand(time()/2,time())])
+					$set = 1;
+					break;
 				}
 			}
+			if($set == 1)
+				return View::make('response_view', array('name' => 'Successfully Updated information'));
+			else
+				return View::make('response_view', array('name' => 'Invalid Room Id'));
 		}
 	}catch(ModelNotFoundException $excep){
 	  $response = new Response(null,400);

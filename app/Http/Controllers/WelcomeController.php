@@ -30,7 +30,9 @@ class WelcomeController extends Controller {
 	 */
 	public function index()
 	{
-		return view('welcome');
+		return view('Hello world');
 	}
-
+	public function contact(){
+		return 'Contact me';
+	}
 }
