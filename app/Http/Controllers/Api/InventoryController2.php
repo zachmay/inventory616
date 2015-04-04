@@ -40,11 +40,10 @@ class InventoryController2 extends Controller {
 
 		$updateItem = Input::all();
 
-		//$tag validation
-		if($updateItem->asset_tag!=$tag)
+		//input validation
+		if(empty($updateItem) or ($updateItem['asset_tag']!=$tag))
 		{
-			return  Response::json('Tag inconsistent',400);
-
+			return  Response::json('Invalid Request',400);
 		}
 
 		$item->fill($updateItem);
