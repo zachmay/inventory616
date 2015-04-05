@@ -17,8 +17,8 @@ class InventoryController2 extends Controller {
 	public function show($tag)
 	{
 
-        $item=Item::where('asset_tag',$tag)->first();
-        return $item;
+		$item=Item::where('asset_tag',$tag)->first();
+		return $item;
 
 	}
 
@@ -31,20 +31,24 @@ class InventoryController2 extends Controller {
 	 */
 	public function update($tag)
 	{
-        $item=Item::where('asset_tag',$tag)->first();
+		$item=Item::where('asset_tag',$tag)->first();
 
-        if(is_null($item))
-        {
-            return  Response::json('Not Found',404);
-        }
+		if(is_null($item))
+		{
+			return  Response::json('Not Found',404);
+		}
 
-        $updateItem = Input::all();
+		$updateItem = Input::all();
 
-        //TODO:$updateItem should be validated
+		//input validation
+		if(empty($updateItem) or ($updateItem['asset_tag']!=$tag))
+		{
+			return  Response::json('Invalid Request',400);
+		}
 
-        $item->fill($updateItem);
-        $item->save();
-        return $item;
+		$item->fill($updateItem);
+		$item->save();
+		return $item;
 	}
 
 	/**
@@ -55,17 +59,17 @@ class InventoryController2 extends Controller {
 	 */
 	public function destroy($tag)
 	{
-        $item=Item::where('asset_tag',$tag)->first();
+		$item=Item::where('asset_tag',$tag)->first();
 
-        if(is_null($item))
-        {
-            return  Response::json('Not Found',404);
-        }
+		if(is_null($item))
+		{
+			return  Response::json('Not Found',404);
+		}
 
-        $deleteItem=$item;
-        $item->delete();
+		$deleteItem=$item;
+		$item->delete();
 
-        return $deleteItem;
+		return $deleteItem;
 	}
 
 }

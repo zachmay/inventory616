@@ -5,17 +5,44 @@ use App\Http\Controllers\Controller;
 
 use App\ItemType;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Response;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class ItemTypeController extends Controller {
 
 	/**
-	 * 
+	 * Return inventory types 
 	 *
-	 * @return all resource item types
+	 * @return Inventory item types
 	 */
 	public function index()
 	{
-		return ItemType::all();
+		$httpContents = '';
+		$httpStatus = 200;
+		$itemTypes = null;
+
+		$itemTypes = ItemType::all();
+		
+		if(is_null($itemTypes))
+		{
+			$httpContents = 'Object is null';
+			$httpStatus = 404;
+		}
+		else
+		{
+			// Check if content is empty
+			if(empty($itemTypes))
+			{
+				$httpContents = 'No item types available';
+			}
+			else
+			{
+				$httpContents = $itemTypes;
+			}
+		}
+
+		return  Response::make($httpContents, $httpStatus); 
+
 	}
 
 	/**
