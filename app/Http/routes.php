@@ -27,8 +27,8 @@ Route::group([
     Route::post('example', 'ExampleController@post');
 
     #add by peng@team4
-    Route::get('inventory','InventoryController1@index');
-    Route::post('inventory','InventoryController1@store');
+    Route::get('inventory','InventoryCollectionController@index');
+    Route::post('inventory','InventoryCollectionController@store');
     Route::get('inventory/{tag}','InventoryController2@show');
     Route::put('inventory/{tag}','InventoryController2@update');
     Route::delete('inventory/{tag}','InventoryController2@destroy');
