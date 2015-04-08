@@ -5,11 +5,12 @@ use App\Item;
 use App\Room;
 use App\Building;
 use App\CheckIn;
+use App\ItemType;
 use Illuminate\Http\Response;
-use Illuminate\Http\Request;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Input;
 use Request;
+use Illuminate\Support\Facades\Input;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+
 class CheckInController extends Controller {
     
     /**
@@ -20,12 +21,9 @@ class CheckInController extends Controller {
      * 
      * returns Response object
      */
-	 
     function getHistory_($tag = null, Request $request) {
 		// default to JSON format
 		$format = 'json';
-		
-		
 		
 		//if($request->has('format'))
 			//$format = $request->get('format');
@@ -142,59 +140,142 @@ class CheckInController extends Controller {
 		return $response;
 	}
 	
-/**
- view me function
-**/
- function view_me(){
- 
-	return view('post_method.show');
- }
 	/**
+	view_me  method for operation purpose
+	**/
+function view_me(){
+	return view('post_method.show');
+}
+/**
      * POST /inventory/:tag/history
      * Create a new check-in resource for the specified option, 
 	 based on the data in the request body (in particular, the room ID).
 */
-
+function post_history_test(){
+	if(Input::has('your_name')){
+		echo 'yes it has the variable name';
+		$my_name = 'Rios';
+	}else
+		$my_name = Input::get('firstnametext');
+	$e_mail = Request::input('lastnametext');
+	$arr = Request::all();
+	$my_arr = array('my_name' => $my_name, 'email' => $e_mail);
+	$csvText = "";
+	$csvText .= implode(',',array_values($arr))."\n";
+	return Response($arr,200);
+}
+public function check_each_item($elements){
+	$item_comp = array('asset_tag','item_type','item_name','funding_source','model','cpu','ram','hard_disk','os','administrator_flag','teacher_flag','student_flag','institution_flag');
+	$item_else = array('asset_tag','item_type','item_name','funding_source','model','administrator_flag','teacher_flag','student_flag','institution_flag');
+	if($elements['item_type'] == 'Computer'){
+		foreach($item_comp as $comp_item){
+			if(in_array($comp_item,array_keys($elements))== false){
+				//dd($elements['asset_tag']);
+				return 0;
+			}
+		}
+	}else{
+		foreach($item_else as $else_item){
+			if(in_array($else_item,array_keys($elements))==false){
+				dd("returning 0");
+				return 0;
+			}
+		}
+	}
+	
+	return 1;
+}
 function postHistory($tag=null, Request $request){
+
 	if($tag == null || trim($tag) == '')
 		return new Response(null,400);
-	//if(!Request::isMethod('post'))
-		//return Response(null,404);
-
+	if(!Request::isMethod('post'))
+		return Response(null,404);
+	
 	try{
 		if(Input::has('room_id')){
-			$room_id = Input::get('room_id');
+			$array_of_elem = Input::all();
+			$room_id = $array_of_elem['room_id'];
 			$checked_in_data = CheckIn::all();
-			$item_type_table = DB::table('item_types')->where('name','=',Input::get('item_name'))->get();
-			$projector_id = $item_type_table[0]['id'];
+		
+			try{
+				$item_type_table = ItemType::where('name','=',Input::get('item_type'))->get();
+			}catch(ModelNotFoundException $e){
+				return Response("Need proper device name",404);
+			}
+			
+			if(count($item_type_table) == 0){
+				
+				return Response("Need proper device name",404);
+			}
+			$device_id = $item_type_table[0];
+			
 			srand(1);
-			$set = 0;
+			$setting = 0;
+			$check_each_items = $this->check_each_item($array_of_elem);
+			if($check_each_items == 0){
+				//dd($check_each_items);
+				return Response("Missing Item",404);
+			}
 			foreach($checked_in_data as $data){
-				if($data->room_id == $room_id){
-					$array_of_elem = Input::all();
-					Item::create([
-								 'asset_tag'          => $array_of_elem['asset_tag'],
-								 'name'               => $array_of_elem['name'],
+			
+				$data = $data->toArray();
+				if($data['room_id'] == $room_id){
+					$element_exist = Item::where('asset_tag','=',$array_of_elem['asset_tag'])->get();
+					if(count($element_exist)!=0){
+					  return Response("Data with similar tag name already exist",404);
+					}
+			
+					if($array_of_elem['item_type'] == 'Computer'){
+						try{
+						       Item::create([
+										'asset_tag'          => $array_of_elem['asset_tag'],
+										'name'               => $array_of_elem['item_name'],
+										'funding_source'     => $array_of_elem['funding_source'],
+										'item_type_id'       => (int)$device_id->id,
+										'model'              => $array_of_elem['model'],
+										'cpu'                => $array_of_elem['cpu'],
+										'ram'                => $array_of_elem['ram'],
+										'hard_disk'          => $array_of_elem['hard_disk'],
+										'os'                 => $array_of_elem['os'],
+										'administrator_flag' => (bool)$array_of_elem['administrator_flag'],
+										'teacher_flag'       => (bool)$array_of_elem['teacher_flag'],
+										'student_flag'       => (bool)$array_of_elem['student_flag'],
+										'institution_flag'   => (bool)$array_of_elem['institution_flag']
+								]);
+						}catch ( Illuminate\Database\QueryException $e) {
+								var_dump($e->errorInfo );
+						}catch(Exception $ex){
+							return Response("duplicate asset tag",404 );
+						}
+					}else{
+						Item::create(['asset_tag'          => $array_of_elem['asset_tag'],
+								 'name'               => $array_of_elem['item_name'],
 								 'funding_source'     => $array_of_elem['funding_source'],
-								 'item_type_id'       => $projector->id,
+								 'item_type_id'       => $device_id,
 								 'model'              => $array_of_elem['model'],
 								 'administrator_flag' => $array_of_elem['administrator_flag'],
 								 'teacher_flag'       => $array_of_elem['teacher_flag'],
 								 'student_flag'       => $array_of_elem['student_flag'],
 								 'institution_flag'   => $array_of_elem['institution_flag']
 								 ]);
-					CheckIn::create(['room_id' => $data->room_id,
-									'item_id' => DB::table('items')->where('asset_tag','=',$array_of_elem['asset_tag'])->get()[0]['id'],
+					
+					}
+					CheckIn::create(['room_id' => (int)$data['room_id'],
+									'item_id' => (int)Item::where('asset_tag','=',$array_of_elem['asset_tag'])
+									->get()[0]['id'],
 									'created_at' => rand(time()/2,time())]);
-					$set = 1;
+					$setting = 1;
 					break;
 				}
+				//dd($data['room_id']);
 			}
-			if($set == 1)
-				return View::make('response_view', array('name' => 'Successfully Updated information'));
+			if($setting == 1)
+				return Response("Successfully Created Checked In Item",200);
 			else
-				return View::make('response_view', array('name' => 'Invalid Room Id'));
+				return Response("Invalid Room ID",404);
 		}else{
+			dd("return a view");
 			return View::make('response_view', array('name' => 'Provide necessary Room ID essential for performing Checked in'));
 		}
 	}catch(ModelNotFoundException $excep){

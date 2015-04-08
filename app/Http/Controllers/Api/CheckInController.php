@@ -37,7 +37,7 @@ class CheckInController extends Controller {
 			$item = Item::where('asset_tag',$tag)->firstOrFail();
 			
 			// get the checkin history for the item and set response
-			$checkins = CheckIn::where('item_id',$item->id)->get();
+			$checkins = CheckIn::where('item_id',$item->item_type_id)->get();
 			if($format == 'json') {
 				$response = new Response($checkins,200);
 			} else {
@@ -170,7 +170,7 @@ public function check_each_item($elements){
 	if($elements['item_type'] == 'Computer'){
 		foreach($item_comp as $comp_item){
 			if(in_array($comp_item,array_keys($elements))== false){
-				dd($elements['asset_tag']);
+				//dd($elements['asset_tag']);
 				return 0;
 			}
 		}
@@ -197,6 +197,7 @@ function postHistory($tag=null, Request $request){
 			$array_of_elem = Input::all();
 			$room_id = $array_of_elem['room_id'];
 			$checked_in_data = CheckIn::all();
+		
 			try{
 				$item_type_table = ItemType::where('name','=',Input::get('item_type'))->get();
 			}catch(ModelNotFoundException $e){
@@ -220,7 +221,10 @@ function postHistory($tag=null, Request $request){
 			
 				$data = $data->toArray();
 				if($data['room_id'] == $room_id){
-					
+					$element_exist = Item::where('asset_tag','=',$array_of_elem['asset_tag'])->get();
+					if(count($element_exist)!=0){
+					  return Response("Data with similar tag name already exist",404);
+					}
 					if($array_of_elem['item_type'] == 'Computer'){
 						try{
 						       Item::create([
@@ -239,7 +243,7 @@ function postHistory($tag=null, Request $request){
 										'institution_flag'   => (bool)$array_of_elem['institution_flag']
 								]);
 						}catch ( Illuminate\Database\QueryException $e) {
-								return Response($e->errorInfo,404 );
+								var_dump($e->errorInfo );
 						}catch(Exception $ex){
 							return Response("duplicate asset tag",404 );
 						}
@@ -258,12 +262,12 @@ function postHistory($tag=null, Request $request){
 					}
 					CheckIn::create(['room_id' => (int)$data['room_id'],
 									'item_id' => (int)Item::where('asset_tag','=',$array_of_elem['asset_tag'])
-									->get()[0]['id'],
+									->get()[0]['item_type_id'],
 									'created_at' => rand(time()/2,time())]);
 					$setting = 1;
 					break;
 				}
-				dd($data['room_id']);
+				//dd($data['room_id']);
 			}
 			if($setting == 1)
 				return Response("Successfully Created Checked In Item",200);

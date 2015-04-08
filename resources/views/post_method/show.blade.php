@@ -22,7 +22,7 @@
   <tr>
  <div class="form-group">
   <td>{!! Form::label('item_type_label','Item Type:') !!}	</td>
-  <td>{!! Form::text('item_type', null,[ 'class' => 'form-control']) !!}</td>
+  <td>{!! Form::select('item_type', array('Computer' => 'Computer', 'Projector' => 'Projector')) !!}</td>
   </div>
   </tr>
   <tr>
