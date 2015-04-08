@@ -35,7 +35,7 @@ class CheckInController extends Controller {
 			$item = Item::where('asset_tag',$tag)->firstOrFail();
 			
 			// get the checkin history for the item and set response
-			$checkins = CheckIn::where('item_id',$item->id)->get();
+			$checkins = CheckIn::where('item_id',$item->id)->orderBy('created_at','desc')->get();
 			if($format == 'json') {
 				$response = new Response($checkins,200);
 			} else {
