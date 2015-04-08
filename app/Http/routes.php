@@ -13,11 +13,6 @@
 
 Route::get('/', 'HomeController@index');
 
-Route::controllers([
-	'auth' => 'Auth\AuthController',
-	'password' => 'Auth\PasswordController',
-]);
-
 Route::group([
     'prefix'     => 'api',
     'namespace'  => 'Api',
@@ -26,12 +21,21 @@ Route::group([
     Route::get('example', 'ExampleController@get');
     Route::post('example', 'ExampleController@post');
 	//route for team6
-	Route::get('/inventory/{tag}/history','CheckInController@getHistory');
+	
+	Route::get('/inventory/view','CheckInController@view_me');
+	Route::post('/inventory/{tag}/post_history','CheckInController@postHistory');
+	Route::get('inventory/{tag}/history','CheckInController@getHistory_');
 	Route::get('/inventory/{tag}/history/latest','CheckInController@getHistoryLatest');
 	Route::get('/inventory/{tag}/history/{num}','CheckInController@getHistoryByNum');
-	Route::post('/inventory/{tag}/history','CheckInController@postHistory');
+	
 
 });
+Route::controllers([
+	'auth' => 'Auth\AuthController',
+	'password' => 'Auth\PasswordController',
+]);
+
+
 
 
 

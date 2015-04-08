@@ -85,7 +85,21 @@ class ItemSeeder extends Seeder
             'student_flag'       => false,
             'institution_flag'   => false
         ]);
-
+		Item::create([
+            'asset_tag'          => 'abc1234',
+            'name'               => 'MacBook Pro',
+            'funding_source'     => 'Grant 1234A',
+            'item_type_id'       => $comp->id,
+            'model'              => 'MacBook Pro 2015',
+            'cpu'                => '2.2 GHz Quad-core',
+            'ram'                => '16GB',
+            'hard_disk'          => '512GB',
+            'os'                 => 'Mac OS X 10.10',
+            'administrator_flag' => true,
+            'teacher_flag'       => false,
+            'student_flag'       => false,
+            'institution_flag'   => false
+        ]);
         Item::create([
             'asset_tag'          => 'XYZ789',
             'name'               => 'Projector',
