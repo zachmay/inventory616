@@ -25,7 +25,17 @@ Route::group([
 ], function () {
     Route::get('example', 'ExampleController@get');
     Route::post('example', 'ExampleController@post');
-});
+
+    #add by peng@team4
+    Route::get('inventory','InventoryCollectionController@index');
+    Route::post('inventory','InventoryCollectionController@store');
+    Route::get('inventory/{tag}','InventoryController2@show');
+    Route::put('inventory/{tag}','InventoryController2@update');
+    Route::delete('inventory/{tag}','InventoryController2@destroy');
+
+    Route::get('inventory-types','ItemTypeController@index');
+
+    });
 
 
 
