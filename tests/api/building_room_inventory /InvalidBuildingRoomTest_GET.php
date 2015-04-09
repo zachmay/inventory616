@@ -32,13 +32,13 @@ class InvalidBuildingRoomTest_GET extends TestCase {
 		// Setup assumptions.
 		Model::unguard();
 		$building = Building::where('id', '=', 97391);
-		if(isset($building))
+		if(isset($building->first()))
 		{
 			$building->delete();
 		}
 		$room = Room::where('id', '=', 79234,
 						'and', 'building_id','=', 97391);
-		if(isset($room))
+		if(isset($room->first()))
 		{
 			$room->delete();
 		}
@@ -50,7 +50,7 @@ class InvalidBuildingRoomTest_GET extends TestCase {
 		// Cleanup assumptions.
 		try
 		{
-
+			
 		}
 		catch(Exception $e)
 		{

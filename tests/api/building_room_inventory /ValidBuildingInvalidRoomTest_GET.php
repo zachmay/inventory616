@@ -26,19 +26,21 @@ class ValidBuildingInvalidRoomTest_GET extends TestCase {
 	  *
 	 **/
 
+	private $building;
+
 	public function setUp()
 	{
 		parent::SetUp();
 		// Setup assumptions.
 		Model::unguard();
-		$building = Building::where('id', '=', 3320)->first();
-		if(is_null($building))
+		$this->building = Building::where('id', '=', 3320)->first();
+		if(is_null($this->building))
 		{
-			$building = Building::create(['id' => '3320', 'name' => 'test_bld', 'description' => 'test_bld']);
+			$this->building = Building::create(['id' => '3320', 'name' => 'test_bld', 'description' => 'test_bld']);
 		}
 		$room = Room::where('id', '=', 79234,
-						'and', 'building_id','=', $building->id);
-		if(isset($room))
+						'and', 'building_id','=', $this->building->id);
+		if(isset($room->first()))
 		{
 			$room->delete();
 		}
