@@ -34,13 +34,13 @@ class InvalidBuildingRoomTest_GET extends TestCase {
 		$building = Building::where('id', '=', 97391);
 		if(isset($building))
 		{
-			$building->Delete();
+			$building->delete();
 		}
 		$room = Room::where('id', '=', 79234,
 						'and', 'building_id','=', 97391);
 		if(isset($room))
 		{
-			$room->Delete();
+			$room->delete();
 		}
 		//fwrite(STDOUT, __METHOD__ . "\n");
 	}

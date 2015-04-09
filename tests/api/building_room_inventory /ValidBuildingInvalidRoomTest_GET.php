@@ -40,7 +40,7 @@ class ValidBuildingInvalidRoomTest_GET extends TestCase {
 						'and', 'building_id','=', $building->id);
 		if(isset($room))
 		{
-			$room->Delete();
+			$room->delete();
 		}
 		//fwrite(STDOUT, __METHOD__ . "\n");
 	}

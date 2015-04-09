@@ -60,11 +60,11 @@ class ValidRoomTest_GET extends TestCase {
 		{
 			if(isset($this->room))
 			{
-				$this->room->Delete();
+				$this->room->delete();
 			}
 			if(isset($this->building))
 			{
-				$this->building->Delete();
+				$this->building->delete();
 			}
 		}
 		catch(Exception $e)
