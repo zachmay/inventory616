@@ -86,6 +86,7 @@ class ValidRoomTest_GET extends TestCase {
 		// convert json to an array rather than an object.
 		$body = json_decode($response->getContent(), true);
 		// confirm the content is a correct answer.
+		echo($body);
 		$this->assertEquals($body, $this->room->toArray());
 	}
 
