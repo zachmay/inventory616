@@ -12,10 +12,18 @@ use App\User;
 class ValidRoomTest_GET extends TestCase {
 
 	/**
-	 * A basic functional test example.
-	 *
-	 * @return void
-	 */
+	  *  /buildings/:id/rooms/:roomid/inventory
+	  *  Test Case 1
+	  *  Description: Test this api with an existed room id which belong
+      *               to an existed buildings id.
+	  *  Assumption: Room with roomid <101> belongs to building with id <3320>.
+	  *  URL: http://192.168.33.99/api/buildings/101/rooms/3320/inventory
+	  *  Calling Method: GET
+	  *  Anticipated Result Code: 200.
+	  *  Anticipated Result Datatype: JSON.
+	  *  Anticipated Result Data: a list of inventory belong to the room.
+	  *
+	 **/
 	private $room;
 	private $building;
 
