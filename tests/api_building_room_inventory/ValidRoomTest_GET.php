@@ -37,7 +37,7 @@ class ValidRoomTest_GET extends TestCase {
 		$building = Building::where('id', '=', 3320)->first();
 		if(is_null($building))
 		{
-			$building = Building::create(['id' => '101', 'name' => 'test_bld', 'description' => 'test_bld']);
+			$building = Building::create(['id' => '3320', 'name' => 'test_bld', 'description' => 'test_bld']);
 		}
 		//echo($building->toJson());
 
