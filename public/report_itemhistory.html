@@ -14,7 +14,6 @@
 
     <!-- Bootstrap core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
-
     <!-- Custom styles for this template -->
     <link href="http://getbootstrap.com/examples/dashboard/dashboard.css" rel="stylesheet">
 
@@ -48,7 +47,7 @@
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Facilities <span class="caret"></span></a>
               <ul class="dropdown-menu" role="menu">
                 <li><a href="building.html">Building</a></li>
-                <li class="active"><a href="room.html">Room</a></li>
+                <li><a href="room.html">Room</a></li>
               </ul>
             </li>
             <li class="dropdown">
@@ -63,7 +62,7 @@
             <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Reports <span class="caret"></span></a>
               <ul class="dropdown-menu" role="menu">
-                <li><a href="report_itemhistory.html">Item History</a></li>
+                <li class="active"><a href="report_itemhistory.html">Item History</a></li>
                 <li><a href="report_itemhistorybytype.html">Item History By Types</a></li>
                 <li><a href="report_itemreconciliation.html">Item Reconciliation</a></li>
                 <li><a href="#">Bulk Export</a></li>
@@ -79,35 +78,48 @@
 
     <div class="container theme-showcase" role="main">
       <div class="page-header">
-        <h1>Manage Room</h1>
+        <h1>Report - Item History</h1>
       </div>
       <h4>Building</h4>
       <div class="bs-docs-example">
-        <input type="text" class="span3" style="margin: 0 auto;" data-provide="typeahead" data-items="4" data-source='["Highland Elementary","Powell County High School"]'>
+        <input type="text" class="span3" style="margin: 0 auto;" data-provide="typeahead" data-items="4" data-source='["Tablets","Computers","Smartboards"]'>
       </div>
       <h4>Room</h4>
       <div class="bs-docs-example">
         <input type="text" class="span3" style="margin: 0 auto;" data-provide="typeahead" data-items="4" data-source='["Room 100 - Ms. Smith","Room 101 - Mrs. Jones","Room 102 - Mr. Bill"]'>
       </div>
-      <br class="divider">
-      <p>
-        <a class="btn btn-primary active" href="#" role="button">Create</a>
-        <a class="btn btn-primary" href="#" role="button">Edit</a>
-        <a class="btn btn-primary" href="#" role="button">Delete</a>
-      </p>
+      <h4>Type</h4>
+      <div class="bs-docs-example">
+        <input type="text" class="span3" style="margin: 0 auto;" data-provide="typeahead" data-items="4" data-source='["Computers","Tablets","Smartboards"]'>
+      </div>
       <hr class="divider">
-      <form class="form-actions" action"#">
-        <h4>Room Name</h4>
-        <div class="form-group">
-          <input type="text" class="span3" placeholder="Text input" required>
-        </div>
-        <h4>Teacher / Description</h4>
-        <div class="form-group">
-          <input type="text" class="span3" placeholder="Text input" required>
-        </div>
-        <button class="btn btn-success" type="submit">Save</button>
-        <button class="btn btn-danger" type="button">Cancel</button>
-      </form>
+      <h4>Results</h4>
+      <table class="table table-striped table-hover table-condensed table-bordered">
+        <thead>
+          <tr>
+            <th class="text-center">Item</th>
+            <th class="text-center">Asset #</th>
+            <th class="text-center">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Teacher's Tablet</td>
+            <td>ABCD123</td>
+            <td class="text-center"><a href="report_viewhistory.html">View History</a></td>
+          </tr>
+          <tr>
+            <td>Student Tablet 1</td>
+            <td>ABCD123</td>
+            <td class="text-center"><a href="report_viewhistory.html">View History</a></td>
+          </tr>
+          <tr>
+            <td>Student Tablet 2</td>
+            <td>ABCD123</td>
+            <td class="text-center"><a href="report_viewhistory.html">View History</a></td>
+          </tr>
+        </tbody>
+      </table>
     </div>
 
     <!-- Bootstrap core JavaScript

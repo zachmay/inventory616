@@ -51,9 +51,24 @@
                 <li><a href="room.html">Room</a></li>
               </ul>
             </li>
-            <li><a href="#">Inventory</a></li>
-            <li><a href="#">Check-In</a></li>
-            <li><a href="#">Reports</a></li>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Inventory <span class="caret"></span></a>
+              <ul class="dropdown-menu" role="menu">
+                <li><a href="checkin.html">Check-In</a></li>
+                <li><a href="scan.html">Scan</a></li>
+                <li><a href="finditem.html">Find Item</a></li>
+                <li><a href="item.html">Item</a></li>
+              </ul>
+            </li>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Reports <span class="caret"></span></a>
+              <ul class="dropdown-menu" role="menu">
+                <li><a href="report_itemhistory.html">Item History</a></li>
+                <li><a href="report_itemhistorybytype.html">Item History By Types</a></li>
+                <li><a href="report_itemreconciliation.html">Item Reconciliation</a></li>
+                <li><a href="#">Bulk Export</a></li>
+              </ul>
+            </li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
             <li><a href="login.html">Log out</a></li>
@@ -62,28 +77,9 @@
       </div>
     </nav>
 
-    <div class="container-fluid">
-      <div class="row">
-        <div class="col-sm-3 col-md-2 sidebar">
-          <ul class="nav nav-sidebar">
-            <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Facilities <span class="caret"></span></a>
-              <ul class="dropdown-menu" role="menu">
-                <li><a href="building.html">Building</a></li>
-                <li><a href="room.html">Room</a></li>
-              </ul>
-            </li>
-            <li><a href="#">Inventory</a></li>
-            <li><a href="#">Check-In</a></li>
-            <li><a href="#">Reports</a></li>
-          </ul>
-          <ul class="nav nav-sidebar">
-            <li><a href="login.html">Log out</a></li>
-          </ul>
-        </div>
-        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-          <h1 class="page-header">Welcome</h1>
-        </div>
+    <div class="container theme-showcase" role="main">
+      <div class="page-header">
+        <h1>Welcome</h1>
       </div>
     </div>
 

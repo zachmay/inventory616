@@ -48,7 +48,7 @@
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Facilities <span class="caret"></span></a>
               <ul class="dropdown-menu" role="menu">
                 <li><a href="building.html">Building</a></li>
-                <li class="active"><a href="room.html">Room</a></li>
+                <li><a href="room.html">Room</a></li>
               </ul>
             </li>
             <li class="dropdown">
@@ -57,7 +57,7 @@
                 <li><a href="checkin.html">Check-In</a></li>
                 <li><a href="scan.html">Scan</a></li>
                 <li><a href="finditem.html">Find Item</a></li>
-                <li><a href="item.html">Item</a></li>
+                <li class="active"><a href="item.html">Item</a></li>
               </ul>
             </li>
             <li class="dropdown">
@@ -79,8 +79,30 @@
 
     <div class="container theme-showcase" role="main">
       <div class="page-header">
-        <h1>Manage Room</h1>
+        <h1>Manage Item</h1>
       </div>
+      <form class="form-actions" action"#">
+        <h4>Type</h4>
+        <div class="bs-docs-example">
+          <input type="text" class="span3" style="margin: 0 auto;" data-provide="typeahead" data-items="4" data-source='["Tablets","Computers","Smartboards"]'>
+        </div>
+        <h4>Description</h4>
+        <div class="form-group">
+          <input type="text" class="span3" placeholder="Text input" required>
+        </div>
+        <h4>Model</h4>
+        <div class="form-group">
+          <input type="text" class="span3" placeholder="Text input" required>
+        </div>
+        <h4>Asset Tag</h4>
+        <div class="form-group">
+          <input type="text" class="span3" placeholder="Text input" required>
+        </div>
+        <button class="btn btn-success" type="submit">Save</button>
+        <button class="btn btn-danger" type="button">Cancel</button>
+      </form>
+      <hr class="divider">
+      <h4><strong>Check-in Location</strong></h4>
       <h4>Building</h4>
       <div class="bs-docs-example">
         <input type="text" class="span3" style="margin: 0 auto;" data-provide="typeahead" data-items="4" data-source='["Highland Elementary","Powell County High School"]'>
@@ -89,25 +111,6 @@
       <div class="bs-docs-example">
         <input type="text" class="span3" style="margin: 0 auto;" data-provide="typeahead" data-items="4" data-source='["Room 100 - Ms. Smith","Room 101 - Mrs. Jones","Room 102 - Mr. Bill"]'>
       </div>
-      <br class="divider">
-      <p>
-        <a class="btn btn-primary active" href="#" role="button">Create</a>
-        <a class="btn btn-primary" href="#" role="button">Edit</a>
-        <a class="btn btn-primary" href="#" role="button">Delete</a>
-      </p>
-      <hr class="divider">
-      <form class="form-actions" action"#">
-        <h4>Room Name</h4>
-        <div class="form-group">
-          <input type="text" class="span3" placeholder="Text input" required>
-        </div>
-        <h4>Teacher / Description</h4>
-        <div class="form-group">
-          <input type="text" class="span3" placeholder="Text input" required>
-        </div>
-        <button class="btn btn-success" type="submit">Save</button>
-        <button class="btn btn-danger" type="button">Cancel</button>
-      </form>
     </div>
 
     <!-- Bootstrap core JavaScript
