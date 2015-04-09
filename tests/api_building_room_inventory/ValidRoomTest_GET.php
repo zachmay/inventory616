@@ -12,6 +12,7 @@ use App\User;
 class ValidRoomTest_GET extends TestCase {
 
 	/**
+	  *
 	  *  /buildings/:id/rooms/:roomid/inventory
 	  *  Test Case 1
 	  *  Description: Test this api with an existed room id which belong
@@ -22,6 +23,7 @@ class ValidRoomTest_GET extends TestCase {
 	  *  Anticipated Result Code: 200.
 	  *  Anticipated Result Datatype: JSON.
 	  *  Anticipated Result Data: a list of inventory belong to the room.
+	  *  Test Code Source: tests/api/building_room_inventory/ValidRoomTest_GET.php
 	  *
 	 **/
 	private $room;
@@ -32,18 +34,18 @@ class ValidRoomTest_GET extends TestCase {
 		parent::SetUp();
 		// Setup assumptions.
 		Model::unguard();
-		$building = Building::where('id', '=', 101)->first();
+		$building = Building::where('id', '=', 3320)->first();
 		if(is_null($building))
 		{
 			$building = Building::create(['id' => '101', 'name' => 'test_bld', 'description' => 'test_bld']);
 		}
 		//echo($building->toJson());
 
-		$room = Room::where('id', '=', 3320,
+		$room = Room::where('id', '=', 101,
 						'and', 'building_id','=', $building->id)->first();
 		if(is_null($room))
 		{
-			$room = Room::create(['id' => '3320', 'name' => 'test_room', 'description' => 'test_room', 'building_id' => $building->id]);
+			$room = Room::create(['id' => '101', 'name' => 'test_room', 'description' => 'test_room', 'building_id' => $building->id]);
 		}
 		//echo($room->toJson());
 		$this->room = $room;
@@ -79,7 +81,7 @@ class ValidRoomTest_GET extends TestCase {
 
 	public function testGet()
 	{
-		$response = $this->call('GET', 'http://192.168.33.99/api/buildings/101/rooms/3320/inventory');
+		$response = $this->call('GET', 'http://192.168.33.99/api/buildings/3320/rooms/101/inventory');
 		// confirm some of the response headers.
 		$this->assertResponseStatus(200, $response->getStatusCode());
 		$this->assertEquals('application/json', $response->headers->get('content-type'));
