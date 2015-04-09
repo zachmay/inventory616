@@ -58,12 +58,13 @@ class InventoryTest_GET extends TestCase {
 		}
 	}
 
-	public function testGet()
+	public function testDelete()
 	{
 		$response = $this->call('DELETE', 'http://192.168.33.99/api/inventory/test_tag');
 		// confirm some of the response headers.
 		$this->assertResponseStatus(404, $response->getStatusCode());
 		// confirm the content is a correct answer.
+		$body = json_decode($response->getContent(), true);
 		echo($body);
 	}
 

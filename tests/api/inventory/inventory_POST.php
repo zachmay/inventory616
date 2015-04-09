@@ -99,12 +99,13 @@ class InventoryTest_POST extends TestCase {
 		}
 	}
 
-	public function testGet()
+	public function testPost()
 	{
 		$response = $this->call('POST', 'http://192.168.33.99/api/inventory');
 		// confirm some of the response headers.
 		$this->assertResponseStatus(201, $response->getStatusCode());
 		// confirm the content is a correct answer.
+		$body = json_decode($response->getContent(), true);
 		echo($body);
 		$this->invt = Item::where('name', '=', 'test_comp');
 		$this->assertTrue(isset($this->invt->get()));
