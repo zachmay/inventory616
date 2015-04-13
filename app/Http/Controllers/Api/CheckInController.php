@@ -151,19 +151,7 @@ function view_me(){
      * Create a new check-in resource for the specified option, 
 	 based on the data in the request body (in particular, the room ID).
 */
-function post_history_test(){
-	if(Input::has('your_name')){
-		echo 'yes it has the variable name';
-		$my_name = 'Rios';
-	}else
-		$my_name = Input::get('firstnametext');
-	$e_mail = Request::input('lastnametext');
-	$arr = Request::all();
-	$my_arr = array('my_name' => $my_name, 'email' => $e_mail);
-	$csvText = "";
-	$csvText .= implode(',',array_values($arr))."\n";
-	return Response($arr,200);
-}
+
 public function check_each_item($elements){
 	$item_comp = array('asset_tag','item_type','item_name','funding_source','model','cpu','ram','hard_disk','os','administrator_flag','teacher_flag','student_flag','institution_flag');
 	$item_else = array('asset_tag','item_type','item_name','funding_source','model','administrator_flag','teacher_flag','student_flag','institution_flag');
@@ -196,18 +184,15 @@ function postHistory($tag=null, Request $request){
 	
 	//if(!Request::isMethod('post'))
 	//	return Response(null,404);
-	
-	$room_ = Input::json()->get('room_id');
-	$room_arr = Room::where('id','=',$room_)->get();
-	//$check_room_id = $this->room_id_in_table($room_arr,$room_);
-	$items = Item::where('id','=',$tag)->get();
-	if(count($items) == 0)
-		return new Response("Invalid Item Request",404);
-	if(count($room_arr) == 0)
-		return new Response("Bad Request",400);
-	
 	if($tag == null || trim($tag) == '')
 		return new Response(null,400);
+	$room_ = Input::json()->get('room_id');
+	$room_arr = Room::where('id','=',$room_)->get();
+	$items = Item::where('id','=',$tag)->get();
+	if(count($items) == 0)
+		return new Response("Invalid Item",404);
+	if(count($room_arr) == 0)
+		return new Response("Bad Request",400);
 	
 	try{
 		// create the check in history
@@ -219,26 +204,11 @@ function postHistory($tag=null, Request $request){
 		 $arr = CheckIn::where('room_id','=',$room_)
 				->where('item_id','=',$items[0]['id']);
 		 $item_arr = Item::where('id','=',$items[0]['id'])->get();
-		/*$csvText = "";
-		$wroteHeader = false;
-		foreach($arr as $value) {
-					$value = $value->toArray();
-					// build the header first for data set
-					if(!$wroteHeader) {
-						$csvText .= implode(',',array_keys($value)) . "\n";
-						$wroteHeader = true;
-					}
-					
-					$csvText .= implode(',',array_values($value)) . "\n";
-		}
-		$response = new Response($csvText,200);
-		$response->header('Content-Type','text/csv');*/
 		$dest = "/api/inventory/{$item_arr[0]['asset_tag']}/history/latest";
 		return redirect($dest);
 	}catch(ModelNotFoundException $excep){
 		return new Response("something bad happened",400);
 	}
-	
 	
   }
 }
