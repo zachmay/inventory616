@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css">
+	<meta charset="UTF-8">
+	<title>Facilities</title>
+</head>
+<body>
+	<div class="container">
+		<h1>Facilities</h1>
+
+		<table class="table">
+			<thead>
+				<tr>
+					<th>Building</th>
+					<th>Room</th>
+					
+					<th>Action</th>
+				</tr>
+				<tr>
+					<td><input class="form-control building-input"></td>
+					<td><input class="form-control room-input"></td>
+					<td><button class="btn btn-primary add-facility">Add</button></td>
+				</tr>
+			</thead>
+			<tbody class="facilities-list"></tbody>
+		</table>
+	</div>
+
+	<script type="text/template" class="facilities-list-template">
+	<td><span class="building"><%= building %></span></td>
+	<td><span class="room"><%= room %></span></td>
+	<td><button class="btn btn-warning edit-facility">Edit</button> <button class="btn btn-danger delete-facility">Delete</button><button class="btn btn-success update-facility" style="display:none">Update</button> <button class="btn btn-danger cancel" style="display:none">Cancel</button></td>
+
+	</script>
+	
+	<script src="js/jquery-1.11.2.js"></script>
+	<script src="js/underscore.js"></script>
+	<script src="js/backbone.js"></script>
+	<script src="sample4.js"></script>
+</body>
+</html>
