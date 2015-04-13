@@ -21,7 +21,7 @@ class CheckInController extends Controller {
      * 
      * returns Response object
      */
-    function getHistory_($tag = null, Request $request) {
+    function getHistory($tag = null, Request $request) {
 		// default to JSON format
 		$format = 'json';
 		
@@ -185,102 +185,61 @@ public function check_each_item($elements){
 	
 	return 1;
 }
+function room_id_in_table($arr,$room_id){
+	foreach($arr as $items){
+		if($items['id'] == $room_id)
+			return 1; 	
+	}
+	return 0;
+}
 function postHistory($tag=null, Request $request){
-
+	
+	//if(!Request::isMethod('post'))
+	//	return Response(null,404);
+	
+	$room_ = Input::json()->get('room_id');
+	$room_arr = Room::where('id','=',$room_)->get();
+	//$check_room_id = $this->room_id_in_table($room_arr,$room_);
+	$items = Item::where('id','=',$tag)->get();
+	if(count($items) == 0)
+		return new Response("Invalid Item Request",404);
+	if(count($room_arr) == 0)
+		return new Response("Bad Request",400);
+	
 	if($tag == null || trim($tag) == '')
 		return new Response(null,400);
-	if(!Request::isMethod('post'))
-		return Response(null,404);
 	
 	try{
-		if(Input::has('room_id')){
-			$array_of_elem = Input::all();
-			$room_id = $array_of_elem['room_id'];
-			$checked_in_data = CheckIn::all();
-		
-			try{
-				$item_type_table = ItemType::where('name','=',Input::get('item_type'))->get();
-			}catch(ModelNotFoundException $e){
-				return Response("Need proper device name",404);
-			}
-			
-			if(count($item_type_table) == 0){
-				
-				return Response("Need proper device name",404);
-			}
-			$device_id = $item_type_table[0];
-			
-			srand(1);
-			$setting = 0;
-			$check_each_items = $this->check_each_item($array_of_elem);
-			if($check_each_items == 0){
-				//dd($check_each_items);
-				return Response("Missing Item",404);
-			}
-			foreach($checked_in_data as $data){
-			
-				$data = $data->toArray();
-				if($data['room_id'] == $room_id){
-					$element_exist = Item::where('asset_tag','=',$array_of_elem['asset_tag'])->get();
-					if(count($element_exist)!=0){
-					  return Response("Data with similar tag name already exist",404);
+		// create the check in history
+		CheckIn::create([
+						'room_id'	=> $room_,
+						'item_id'	=> $items[0]['id']
+						//'created_at' => rand(time()/2,time())
+					]);
+		 $arr = CheckIn::where('room_id','=',$room_)
+				->where('item_id','=',$items[0]['id']);
+		 $item_arr = Item::where('id','=',$items[0]['id'])->get();
+		/*$csvText = "";
+		$wroteHeader = false;
+		foreach($arr as $value) {
+					$value = $value->toArray();
+					// build the header first for data set
+					if(!$wroteHeader) {
+						$csvText .= implode(',',array_keys($value)) . "\n";
+						$wroteHeader = true;
 					}
-					if($array_of_elem['item_type'] == 'Computer'){
-						try{
-						       Item::create([
-										'asset_tag'          => $array_of_elem['asset_tag'],
-										'name'               => $array_of_elem['item_name'],
-										'funding_source'     => $array_of_elem['funding_source'],
-										'item_type_id'       => (int)$device_id->id,
-										'model'              => $array_of_elem['model'],
-										'cpu'                => $array_of_elem['cpu'],
-										'ram'                => $array_of_elem['ram'],
-										'hard_disk'          => $array_of_elem['hard_disk'],
-										'os'                 => $array_of_elem['os'],
-										'administrator_flag' => (bool)$array_of_elem['administrator_flag'],
-										'teacher_flag'       => (bool)$array_of_elem['teacher_flag'],
-										'student_flag'       => (bool)$array_of_elem['student_flag'],
-										'institution_flag'   => (bool)$array_of_elem['institution_flag']
-								]);
-						}catch ( Illuminate\Database\QueryException $e) {
-								var_dump($e->errorInfo );
-						}catch(Exception $ex){
-							return Response("duplicate asset tag",404 );
-						}
-					}else{
-						Item::create(['asset_tag'          => $array_of_elem['asset_tag'],
-								 'name'               => $array_of_elem['item_name'],
-								 'funding_source'     => $array_of_elem['funding_source'],
-								 'item_type_id'       => $device_id,
-								 'model'              => $array_of_elem['model'],
-								 'administrator_flag' => $array_of_elem['administrator_flag'],
-								 'teacher_flag'       => $array_of_elem['teacher_flag'],
-								 'student_flag'       => $array_of_elem['student_flag'],
-								 'institution_flag'   => $array_of_elem['institution_flag']
-								 ]);
 					
-					}
-					CheckIn::create(['room_id' => (int)$data['room_id'],
-									'item_id' => (int)Item::where('asset_tag','=',$array_of_elem['asset_tag'])
-									->get()[0]['item_type_id'],
-									'created_at' => rand(time()/2,time())]);
-					$setting = 1;
-					break;
-				}
-				//dd($data['room_id']);
-			}
-			if($setting == 1)
-				return Response("Successfully Created Checked In Item",200);
-			else
-				return Response("Invalid Room ID",404);
-		}else{
-			dd("return a view");
-			return View::make('response_view', array('name' => 'Provide necessary Room ID essential for performing Checked in'));
+					$csvText .= implode(',',array_values($value)) . "\n";
 		}
+		$response = new Response($csvText,200);
+		$response->header('Content-Type','text/csv');*/
+		$dest = "/api/inventory/{$item_arr[0]['asset_tag']}/history/latest";
+		return redirect($dest);
 	}catch(ModelNotFoundException $excep){
-	  $response = new Response(null,400);
+		return new Response("something bad happened",400);
 	}
-		return $response;
-	}
+	
+	
+  }
 }
    

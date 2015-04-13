@@ -23,8 +23,8 @@ Route::group([
 	//route for team6
 	
 	Route::get('/inventory/view','CheckInController@view_me');
-	Route::post('/inventory/{tag}/post_history','CheckInController@postHistory');
-	Route::get('inventory/{tag}/history','CheckInController@getHistory_');
+	Route::post('/inventory/{tag}/history','CheckInController@postHistory');
+	Route::get('inventory/{tag}/history','CheckInController@getHistory');
 	Route::get('/inventory/{tag}/history/latest','CheckInController@getHistoryLatest');
 	Route::get('/inventory/{tag}/history/{num}','CheckInController@getHistoryByNum');
 	

@@ -189,8 +189,15 @@ function postHistory($tag=null, Request $request){
 
 	if($tag == null || trim($tag) == '')
 		return new Response(null,400);
-	if(!Request::isMethod('post'))
-		return Response(null,404);
+	//if(!Request::isMethod('post'))
+	//	return Response(null,404);
+	$room_ = Input::get('room_id');
+	dd($room);
+	return Response("Yeah i am working "+$room,200);
+	ob_start();
+	var_dump($someVar);
+	$result = ob_get_clean();	
+	return new Response($result,200);
 	
 	try{
 		if(Input::has('room_id')){
