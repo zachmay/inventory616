@@ -4,6 +4,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class CheckIn extends Model {
 
+	 protected $table = 'check_ins';
+
     public function item() 
     {
         return $this->belongsTo('App\Item');
@@ -13,4 +15,5 @@ class CheckIn extends Model {
     {
         return $this->belongsTo('App\Room');
     }
+
 }
