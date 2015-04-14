@@ -21,14 +21,14 @@ class FacilityManagementController extends Controller {
 			$building_item = Building::where('name','=',$name_)
 					->where('description','=',$description_)->get();
 			if(count($building_item)!=0){
-					return new Response("resource already exist",200);#redirect("api/buildings/{$building_item[0]->id}");
+					return new Response("bad request",400);
 			}
 			$building = new Building;
 			$building->name = $name_;
 			$building->description = $description_;
 			$building->save();
 			
-			return new Response("Ok",200);//redirect("api/buildings/{$building_item[0]->id}");
+			return new Response("Created New Record",201);//redirect("api/buildings/{$building_item[0]->id}");
 	}
 	function facility_management_post_for_rooms($tag = null, Request $request){
 			
@@ -38,7 +38,7 @@ class FacilityManagementController extends Controller {
 			$room_des = Input::json()->get('description');
 			$building_id = Building::find($tag);
 			if(empty($building_id))
-				return Response("building id bad request",404);
+				return Response("bad request",400);
 			$record = Room::where("name","=",$room_name)
 				->where("description","=",$room_des)
 				->where("building_id","=",$tag)->get();
@@ -50,7 +50,7 @@ class FacilityManagementController extends Controller {
 			$room->description = $room_des;
 			$room->building_id = $tag;
 			$room->save();
-			return new Response("Ok",200);//redirect("api/buildings/{$tag}/rooms/{$room->id}");
+			return new Response("Created New Record",201);//redirect("api/buildings/{$tag}/rooms/{$room->id}");
 	
 	}
 	function facility_management_put_for_building($tag = null, Request $request){
@@ -99,10 +99,5 @@ class FacilityManagementController extends Controller {
 			$resource[0]->save();
 		return new Response("OK",200); 
 	}		
-	function facility_management_delete_for_rooms($tag = null, $num = null, Request $response){
 	
-	}
-	function facility_management_delete_for_buildings($tag = null,Response $request){
-		
-	}
 }

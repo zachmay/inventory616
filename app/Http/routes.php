@@ -31,8 +31,8 @@ Route::group([
 	Route::put('/buildings/{tag}','FacilityManagementController@facility_management_put_for_building');
 	Route::put('/buildings/{tag}/rooms/{num}','FacilityManagementController@facility_management_put_for_rooms');
 	Route::post('/buildings/{tag}/rooms','FacilityManagementController@facility_management_post_for_rooms');
-	Route::delete('/buildings/{tag}','FacilityManagementController@facility_management_delete_for_buildings');
-	Route::delete('/buildings/{tag}/rooms/{num}','FacilityManagementController@facility_management_delete_for_rooms');
+	//Route::delete('/buildings/{tag}','FacilityManagementController@facility_management_delete_for_buildings');
+	//Route::delete('/buildings/{tag}/rooms/{num}','FacilityManagementController@facility_management_delete_for_rooms');
 	//Route::delete('buildings/{tag}/');
 	
 });

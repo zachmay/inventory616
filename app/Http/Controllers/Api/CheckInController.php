@@ -205,11 +205,11 @@ function postHistory($tag=null, Request $request){
 				->where('item_id','=',$items[0]['id']);
 		 $item_arr = Item::where('id','=',$items[0]['id'])->get();
 		$dest = "/api/inventory/{$item_arr[0]['asset_tag']}/history/latest";
-		return redirect($dest);
+		//return redirect($dest);
 	}catch(ModelNotFoundException $excep){
 		return new Response("something bad happened",400);
 	}
-	
+	return new Response("Created a New Record",201);
   }
 }
    
