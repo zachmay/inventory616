@@ -16,12 +16,13 @@ class InventoryCollectionController extends Controller {
 	 * @param  string $query
 	 * @return all queried $items
 	 */
-	public function index($query)
+	public function index()
 	{
+		$query = Input::get('query');
 		//$items = Item::all();
 
-		if(!is_null($query)) {
-			
+		if(!is_null($query))
+		{
 			$items = Item::where('asset_tag', $query)->orWhere('name', $query)
 			->orWhere('funding_source', $query)->orWhere('model', $query)
 			->orWhere('cpu', $query)->orWhere('ram', $query)->orWhere('os', $query)
@@ -31,7 +32,7 @@ class InventoryCollectionController extends Controller {
 			return $items;
 
 		} else {
-			return Response::json("Bad Request", 400);
+			return Item::get();
 		}
 	}
 
