@@ -1,6 +1,6 @@
 <?php namespace App\Http\Controllers\Api;
 
-use App\Http\Requests;
+//use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\Item;
 
@@ -16,22 +16,34 @@ class InventoryCollectionController extends Controller {
 	 * @param  string $query
 	 * @return all queried $items
 	 */
-	public function index($query)
+	public function index(Request $request)
 	{
-		//$items = Item::all();
+
+		$query = $request->input('query');
 
 		if(!is_null($query)) {
 			
-			$items = Item::where('asset_tag', $query)->orWhere('name', $query)
-			->orWhere('funding_source', $query)->orWhere('model', $query)
-			->orWhere('cpu', $query)->orWhere('ram', $query)->orWhere('os', $query)
-			->orWhere('administrator_flag', $query)->orWhere('teacher_flag', $query)
-			->orWhere('student_flag', $query)->orWhere('institution_flag', $query)->get();
+			//return the first 20 queried results
+			$items = Item::where('asset_tag','LIKE', '%'.$query.'%')
+						 ->orWhere('name','LIKE', '%'.$query.'%')
+						 ->orWhere('funding_source', 'LIKE', '%'.$query.'%')
+						 ->orWhere('model','LIKE', '%'.$query.'%')
+						 ->orWhere('cpu', 'LIKE', '%'.$query.'%')
+						 ->orWhere('ram','LIKE', '%'.$query.'%')
+						 ->orWhere('os','LIKE', '%'.$query.'%')
+						 ->paginate(20);
+		
+
+	
 
 			return $items;
 
 		} else {
-			return Response::json("Bad Request", 400);
+			
+			//return  the first 20 records
+			$items = Item::paginate(20);
+			return $items;
+			
 		}
 	}
 
@@ -44,13 +56,10 @@ class InventoryCollectionController extends Controller {
 	 */
 	public function store(Request $request)
 	{
-		$this->validate($request, ['asset_tag' => 'required', 'name'=>'required',
-		'administrator_flag' =>'required', 'teacher_flag'=>'required',
-		'institution_flag'=>'required']);
+		$this->validate($request, ['asset_tag' => 'required']);
 
-		Item::create($request->all());
-
-		return Response::json("Created", 201);;
+		$item = Item::create($request->all());
+		return $item;
 
 	}
 	
