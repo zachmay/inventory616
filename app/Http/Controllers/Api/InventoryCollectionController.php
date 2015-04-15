@@ -7,6 +7,7 @@ use App\Item;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Http\Request;
+use Illuminate\Database\QueryException;
 
 class InventoryCollectionController extends Controller {
 
@@ -45,14 +46,23 @@ class InventoryCollectionController extends Controller {
 	 */
 	public function store(Request $request)
 	{
-		$this->validate($request, ['asset_tag' => 'required', 'name'=>'required',
-		'administrator_flag' =>'required', 'teacher_flag'=>'required',
-		'institution_flag'=>'required']);
+		// $this->validate($request, ['asset_tag' => 'required', 'name'=>'required',
+		// 'administrator_flag' =>'required', 'teacher_flag'=>'required',
+		// 'institution_flag'=>'required']);
+        
+        try
+        {
+            $item = new Item();
+            $item->asset_tag = $request->get('asset_tag');
+            $item->item_type_id = $request->get('item_type_id');
+            $item->save();
 
-		Item::create($request->all());
-
-		return Response::json("Created", 201);;
-
+            return Response::json($item->toJson(), 201);
+        }
+        catch ( QueryException $e )
+        {
+            return Response::json('Something went wrong...', 400);
+        }
 	}
 	
 
