@@ -23,7 +23,7 @@ class InventoryCollectionController extends Controller {
 
 		if(!is_null($query)) {
 			
-			//return only the first queried results
+			//return the first 20 queried results
 			$items = Item::where('asset_tag','LIKE', '%'.$query.'%')
 						 ->orWhere('name','LIKE', '%'.$query.'%')
 						 ->orWhere('funding_source', 'LIKE', '%'.$query.'%')
@@ -40,7 +40,7 @@ class InventoryCollectionController extends Controller {
 
 		} else {
 			
-			//return only the first 20 records
+			//return  the first 20 records
 			$items = Item::paginate(20);
 			return $items;
 			
