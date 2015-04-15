@@ -13,8 +13,8 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class FacilitiesManagementController extends Controller {
 
-	//get collection of items from building id and room id
-	function getRoomsItems($Bid = null, $RoomId = null, Request $Request) {
+	//get collection of items from id and room id in checkIn table
+	function getRoomsInventoryItems($Bid = null, $RoomId = null) {
 			
 			
 			if($Bid == null || trim($Bid) == '' || $RoomId =='' || trim($RoomId) =='')
@@ -26,22 +26,105 @@ class FacilitiesManagementController extends Controller {
 				//return $response;
 				//testing with bid = 13, item = 11
 				$result = Room::where('id',$RoomId)->where('building_id',$Bid)->get();
+			
 				if($result->count() > 0){
-					$items = CheckIn::where('room_id',$RoomId)->get();
+					$itemIdArray = checkIn::select()->where('room_id',$RoomId)->get();
+					$items = "";
+					foreach($itemIdArray as $value){
+						$tempId = $value["item_id"];
+						$items .= Item::where('id',$tempId)->get();
+					}
+
 					$response = new Response($items,200);
 				}
-				else{
-					$response = new Response("No result",200);
-				}
+	
 			} catch(ModelNotFoundException $e) {
 			// if not found, set response code to 404 not found
 				$response = new Response(null,404);
 			}
 			return $response;
 	}
-	function getRoomsInventoryItems($id=null,$RoomId,Request $Request){
-		echo"implemenet this ";
+
+	//get info about a room resouce
+	function getRoomsResource($Bid=null, $RoomId=null){
+		
+
+			if($Bid == null || trim($Bid) == '' || $RoomId =='' || trim($RoomId) =='')
+				return new Response(null,400);
+
+			try{
+				//testing with bid = 13, item = 11
+				$RoomResource = Room::where('id',$RoomId)->where('building_id',$Bid)->get();
+				$response = new Response($RoomResource,200);
+
+			}catch(ModelNotFoundException $e) {
+			// if not found, set response code to 404 not found
+				$response = new Response(null,404);
+			}
+			return $response;
+
 	}
+
+	function getBuildingResource($BuildingName = null){
+
+			try{
+				if(is_null($BuildingName)){
+
+					$BuildingResource = Building::select()->get();
+				}
+				else{
+
+					$BuildingResource = Building::where('name',$BuildingName)->get();
+				}
+
+				$response = new Response($BuildingResource,200);
+
+			}catch(ModelNotFoundException $e) {
+			// if not found, set response code to 404 not found
+				$response = new Response(null,404);
+			}
+			return $response;
+
+	}
+
+	function getBuildingResourceOnId($Bid = null){
+
+		if($Bid == null || trim($Bid) == '')
+				return new Response(null,400);
+
+		try{
+
+				$BuildingResource = Building::where('id',$Bid)->get();
+				$response = new Response($BuildingResource,200);
+
+		}catch(ModelNotFoundException $e) {
+			// if not found, set response code to 404 not found
+				$response = new Response(null,404);
+		}
+		return $response;
+	}
+
+	function getBuildingRoomResource($Bid=null,$RoomName=null){
+
+		if($Bid == null || trim($Bid) == '')
+				return new Response(null,400);
+
+		try{
+				if(is_null($RoomName))
+					$RoomResource = Room::where('building_id',$Bid)->get();
+				else
+					$RoomResource = Room::where('building_id',$Bid)->where('name',$RoomName)->get();
+				$response = new Response($RoomResource,200);
+
+		}catch(ModelNotFoundException $e) {
+			// if not found, set response code to 404 not found
+				$response = new Response(null,404);
+		}
+
+		return $response;
+
+	}
+
 	// post method for creating building resources 
 	function postBuildingResource($tag = null){
 			$name_ = Input::json()->get('name');

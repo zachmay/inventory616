@@ -31,8 +31,12 @@ Route::group([
 	Route::get('/inventory/{tag}/history/{num}','CheckInController@getHistoryByNum');
 	Route::post('/inventory/{tag}/history','CheckInController@postHistory');
 	//Facilities Management
-	Route::get('/buildings/{buildingid}/rooms/{roomId}','FacilitiesManagementController@getRoomsItems');
+	Route::get('/buildings:{buildingName?}','FacilitiesManagementController@getBuildingResource');
+	Route::get('/buildings/{id}','FacilitiesManagementController@getBuildingResourceOnId');
+	Route::get('/buildings/{id}/rooms:{roomName?}','FacilitiesManagementController@getBuildingRoomResource');
+	Route::get('/buildings/{buildingid}/rooms/{roomId}','FacilitiesManagementController@getRoomsResource');
 	Route::get('/buildings/{id}/rooms/{roomId}/inventory','FacilitiesManagementController@getRoomsInventoryItems');
+
 	Route::post('/buildings/','FacilitiesManagementController@postBuildingResource');
 	Route::post('/buildings/{tag}/rooms','FacilitiesManagementController@postRoomResource');
 	Route::put('/buildings/{tag}','FacilitiesManagementController@putBuildingUpdate');
