@@ -31,14 +31,19 @@ Route::group([
 	Route::get('/inventory/{tag}/history/{num}','CheckInController@getHistoryByNum');
 	Route::post('/inventory/{tag}/history','CheckInController@postHistory');
 	//Facilities Management
-	Route::get('/buildings/{buildingid}/rooms/{roomId}','FacilitiesManagementController@getRoomsItems');
+	Route::get('/buildings:{buildingName?}','FacilitiesManagementController@getBuildingResource');
+	Route::get('/buildings/{id}','FacilitiesManagementController@getBuildingResourceOnId');
+	Route::get('/buildings/{id}/rooms:{roomName?}','FacilitiesManagementController@getBuildingRoomResource');
+	Route::get('/buildings/{Bid}/rooms/{RoomId}','FacilitiesManagementController@getRoomsResource');
 	Route::get('/buildings/{id}/rooms/{roomId}/inventory','FacilitiesManagementController@getRoomsInventoryItems');
+
 	Route::post('/buildings/','FacilitiesManagementController@postBuildingResource');
-	Route::post('/buildings/{tag}/rooms','FacilitiesManagementController@postRoomResource');
-	Route::put('/buildings/{tag}','FacilitiesManagementController@putBuildingUpdate');
-	Route::put('/buildings/{tag}/rooms/{num}','FacilitiesManagementController@putRoomUpdate');
+	Route::post('/buildings/{bid}/rooms','FacilitiesManagementController@postRoomResource');
+	Route::put('/buildings/{bid}','FacilitiesManagementController@putBuildingUpdate');
+	Route::put('/buildings/{bid}/rooms/{rid}','FacilitiesManagementController@putRoomUpdate');
 	Route::delete('/buildings/{rid}','FacilitiesManagementController@deleteBuildings');
 	Route::delete('/buildings/{bid}/rooms/{rid}','FacilitiesManagementController@deleteRooms');
+	
 
 });
 

@@ -13,11 +13,15 @@ class CheckInController extends Controller {
     
     /**
      * GET /inventory/:tag/history
+     * 
      * Retrieve a list of representations of the entire check-in 
      * history of the specified item. Supports JSON or CSV 
      * response format.
      * 
-     * returns Response object
+     * Returns 200 OK on success.
+     * Returns 400 Bad Request on bad input.
+     * Returns 404 if asset_tag not found.
+     * 
      */
     function getHistory($tag = null, Request $request) {
 		// default to JSON format
@@ -67,9 +71,12 @@ class CheckInController extends Controller {
     
     /**
      * GET /inventory/:tag/history/:num
-     * Retreives a representation of the specified checkin record.
      * 
-     * returns Response object
+     * Retrieves a representation of the specified checkin record.
+     * 
+     * Returns 200 OK on sucess.
+     * Returns 400 Bad Request on bad input.
+     * Returns 404 Not Found if record not found.
      */
     function getHistoryByNum($tag = null, $num = null, Request $request) {
 		// if inadequate input, set response code to 400 bad request
@@ -105,11 +112,14 @@ class CheckInController extends Controller {
     
     /**
      * GET /inventory/:tag/history/latest
+     * 
      * Finds the sequence number of the most recent check-in record 
      * for the specified inventory item and does an HTTP redirect to 
      * that URL.
      * 
-     * returns Response object
+     * Redirects to correct endpoint if sucess.
+     * Returns 400 Bad Request on bad input.
+     * Returns 404 Not Found if record not found.
      */
     function getHistoryLatest($tag = null, Request $request) {
 
@@ -138,42 +148,50 @@ class CheckInController extends Controller {
 		
 		return $response;
 	}
+	
 	/**
      * POST /inventory/:tag/history
+     * 
      * Create a new check-in resource for the specified option, 
-	 based on the data in the request body (in particular, the room ID).
+	 * based on the data in the request body (in particular, the room ID).
+	 * 
+	 * Returns 200 OK on sucess.
+     * Returns 400 Bad Request on bad input.
+     * Returns 404 Not Found if record not found.
+     * Returns 500 Internal Server Error if fails to commit.
      **/
 	function postHistory($tag=null, Request $request){
-	
-	//if(!Request::isMethod('post'))
-	//	return Response(null,404);
-	if($tag == null || trim($tag) == '')
-		return new Response(null,400);
-	$room_ = Input::json()->get('room_id');
-	$room_arr = Room::where('id','=',$room_)->get();
-	$items = Item::where('id','=',$tag)->get();
-	if(count($items) == 0)
-		return new Response("Invalid Item",404);
-	if(count($room_arr) == 0)
-		return new Response("Bad Request",400);
-	
-	try{
-		// create the check in history
-		CheckIn::create([
-						'room_id'	=> $room_,
-						'item_id'	=> $items[0]['id']
-						//'created_at' => rand(time()/2,time())
-					]);
-		 $arr = CheckIn::where('room_id','=',$room_)
-				->where('item_id','=',$items[0]['id']);
-		 $item_arr = Item::where('id','=',$items[0]['id'])->get();
-		$dest = "/api/inventory/{$item_arr[0]['asset_tag']}/history/latest";
-		//return redirect($dest);
-	}catch(ModelNotFoundException $excep){
-		return new Response("Bad Request",400);
+		if($tag == null || trim($tag) == '')
+			return new Response(null,400);
+			
+		$room_id = Input::json()->get('room_id');
+		try {
+			//$item = Item::where('id','=',$tag)->firstOrFail();
+			
+			// create the check in history
+			//CheckIn::create([
+			//				'room_id'	=> $room_,
+			//				'item_id'	=> $item['id']
+			//			]);
+			// $arr = CheckIn::where('room_id','=',$room_)
+			//		->where('item_id','=',$item['id']);
+			Item::findOrFail($room_id);
+			
+			$checkin = new CheckIn();
+			$checkin->room_id = $room_id;
+			$checkin->item_id = $tag;
+			
+			if($checkin->save()) {
+				return new Response(null,200);
+			} else {
+				return new Response(null,500);
+			}		
+			//$item_arr = Item::where('id','=',$item['id'])->get();
+		}catch(ModelNotFoundException $e){
+			return new Response(null,400);
+		}
+		return new Response(null,201);
 	}
-	return new Response("Created a New Record",201);
-  }
 
 
 }
