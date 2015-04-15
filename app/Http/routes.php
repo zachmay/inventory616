@@ -37,7 +37,8 @@ Route::group([
 	Route::post('/buildings/{tag}/rooms','FacilitiesManagementController@postRoomResource');
 	Route::put('/buildings/{tag}','FacilitiesManagementController@putBuildingUpdate');
 	Route::put('/buildings/{tag}/rooms/{num}','FacilitiesManagementController@putRoomUpdate');
-	
+	Route::delete('/buildings/{rid}','FacilitiesManagementController@deleteBuildings');
+	Route::delete('/buildings/{bid}/rooms/{rid}','FacilitiesManagementController@deleteRooms');
 
 });
 

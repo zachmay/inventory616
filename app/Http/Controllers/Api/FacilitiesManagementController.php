@@ -133,6 +133,47 @@ class FacilitiesManagementController extends Controller {
 			$resource[0]->save();
 		return new Response("OK",200); 
 	}		
-
+	///
+	function deleteBuildings($rid = null){
+		if($rid == null || trim($rid) =='')
+			return new Response(null,404);
+		$building_r = Building::find($rid);
+		if(is_null($building_r))
+			return new Response(null,400);
+		$room_r = Room::where('building_id','=',$rid)->get();
+		if(count($room_r) != 0){
+			return new Response(null,400);
+		}
+		$affected_rows = Building::where('id','=',$rid)->delete();
+		if($affected_rows)
+			return new Response(null,200);
+		else
+			return new Response(null,500);
+		
+	}
+	/* Delete methods for the room and building resources
+		perform resource validation and deletion
+	*/
+	function deleteRooms($bid = null, $rid = null){
+		if($rid == null || trim($rid) == '')
+			return new Response(null,404);
+		if($bid == null || trim($bid) == null)
+			return new Response(null,404);
+		$building_r = Building::find($bid);
+		if(is_null($building_r))
+			return new Response(null,400);
+		$room_r = Room::where('id','=',$rid)
+			->where('building_id','=',$bid)->get();
+		if(count($room_r) == 0)
+			return new Response(null,400);
+		$check_in_item = CheckIn::where('room_id','=',$rid)->get();
+		if(count($check_in_item) != 0)
+			return new Response(null,400);
+		$affected_rows = Room::where('id','=',$rid)->delete();
+		if($affected_rows)
+			return new Response(null,200);
+		else
+			return new Response(null,500);
+	}
 
 }
