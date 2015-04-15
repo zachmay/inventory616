@@ -11,7 +11,7 @@
 |
 */
 
-Route::get('/', 'HomeController@index');
+//Route::get('/', 'HomeController@index');
 
 Route::controllers([
 	'auth' => 'Auth\AuthController',
@@ -29,6 +29,7 @@ Route::group([
     #add by peng@team4
     Route::get('inventory','InventoryCollectionController@index');
     Route::post('inventory','InventoryCollectionController@store');
+    Route::get('inventory/report/type', 'ReportsController2@getItemsByType');
     Route::get('inventory/{tag}','InventoryController2@show');
     Route::put('inventory/{tag}','InventoryController2@update');
     Route::delete('inventory/{tag}','InventoryController2@destroy');
