@@ -33,6 +33,11 @@ Route::group([
 	//Facilities Management
 	Route::get('/buildings/{buildingid}/rooms/{roomId}','FacilitiesManagementController@getRoomsItems');
 	Route::get('/buildings/{id}/rooms/{roomId}/inventory','FacilitiesManagementController@getRoomsInventoryItems');
+	Route::post('/buildings/','FacilitiesManagementController@postBuildingResource');
+	Route::post('/buildings/{tag}/rooms','FacilitiesManagementController@postRoomResource');
+	Route::put('/buildings/{tag}','FacilitiesManagementController@putBuildingUpdate');
+	Route::put('/buildings/{tag}/rooms/{num}','FacilitiesManagementController@putRoomUpdate');
+	
 
 });
 

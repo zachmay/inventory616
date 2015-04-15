@@ -138,14 +138,43 @@ class CheckInController extends Controller {
 		
 		return $response;
 	}
-
-}
-    /**
+	/**
      * POST /inventory/:tag/history
      * Create a new check-in resource for the specified option, 
 	 based on the data in the request body (in particular, the room ID).
-     */
-function postHistory($tag = null, Request $request){
-	echo "posted mother fucker";
+     **/
+	function postHistory($tag=null, Request $request){
+	
+	//if(!Request::isMethod('post'))
+	//	return Response(null,404);
+	if($tag == null || trim($tag) == '')
+		return new Response(null,400);
+	$room_ = Input::json()->get('room_id');
+	$room_arr = Room::where('id','=',$room_)->get();
+	$items = Item::where('id','=',$tag)->get();
+	if(count($items) == 0)
+		return new Response("Invalid Item",404);
+	if(count($room_arr) == 0)
+		return new Response("Bad Request",400);
+	
+	try{
+		// create the check in history
+		CheckIn::create([
+						'room_id'	=> $room_,
+						'item_id'	=> $items[0]['id']
+						//'created_at' => rand(time()/2,time())
+					]);
+		 $arr = CheckIn::where('room_id','=',$room_)
+				->where('item_id','=',$items[0]['id']);
+		 $item_arr = Item::where('id','=',$items[0]['id'])->get();
+		$dest = "/api/inventory/{$item_arr[0]['asset_tag']}/history/latest";
+		//return redirect($dest);
+	}catch(ModelNotFoundException $excep){
+		return new Response("Bad Request",400);
+	}
+	return new Response("Created a New Record",201);
+  }
+
 
 }
+    
