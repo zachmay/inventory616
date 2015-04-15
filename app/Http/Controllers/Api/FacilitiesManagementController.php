@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 class FacilitiesManagementController extends Controller {
 
 	//get collection of items from id and room id in checkIn table
+	// GET /buildings/:id/rooms/:roomid/inventory
 	function getRoomsInventoryItems($Bid = null, $RoomId = null) {
 			
 			
@@ -21,18 +22,14 @@ class FacilitiesManagementController extends Controller {
 				return new Response(null,400);
 			try{
 
-				//$result = Room::select('id','building_id')->get();
-				//$response = new Response($result,200);
-				//return $response;
-				//testing with bid = 13, item = 11
-				$result = Room::where('id',$RoomId)->where('building_id',$Bid)->get();
+				$result = Room::where('id',$RoomId)->where('building_id',$Bid)->firstOrFail();
 			
 				if($result->count() > 0){
 					$itemIdArray = checkIn::select()->where('room_id',$RoomId)->get();
-					$items = "";
+					$items = array();
 					foreach($itemIdArray as $value){
 						$tempId = $value["item_id"];
-						$items .= Item::where('id',$tempId)->get();
+						$items[] = Item::where('id',$tempId)->firstOrFail();
 					}
 
 					$response = new Response($items,200);
@@ -46,6 +43,7 @@ class FacilitiesManagementController extends Controller {
 	}
 
 	//get info about a room resouce
+	// GET /buildings/:buildingid/rooms/:roomid
 	function getRoomsResource($Bid=null, $RoomId=null){
 		
 
@@ -54,7 +52,7 @@ class FacilitiesManagementController extends Controller {
 
 			try{
 				//testing with bid = 13, item = 11
-				$RoomResource = Room::where('id',$RoomId)->where('building_id',$Bid)->get();
+				$RoomResource = Room::where('id',$RoomId)->where('building_id',$Bid)->firstOrFail();
 				$response = new Response($RoomResource,200);
 
 			}catch(ModelNotFoundException $e) {
@@ -65,6 +63,7 @@ class FacilitiesManagementController extends Controller {
 
 	}
 
+	// GET /buildings
 	function getBuildingResource($BuildingName = null){
 
 			try{
@@ -87,6 +86,7 @@ class FacilitiesManagementController extends Controller {
 
 	}
 
+	// GET /buildings/:id
 	function getBuildingResourceOnId($Bid = null){
 
 		if($Bid == null || trim($Bid) == '')
@@ -94,7 +94,7 @@ class FacilitiesManagementController extends Controller {
 
 		try{
 
-				$BuildingResource = Building::where('id',$Bid)->get();
+				$BuildingResource = Building::where('id',$Bid)->firstOrFail();
 				$response = new Response($BuildingResource,200);
 
 		}catch(ModelNotFoundException $e) {
@@ -104,6 +104,7 @@ class FacilitiesManagementController extends Controller {
 		return $response;
 	}
 
+	// GET /buildings/:id/rooms
 	function getBuildingRoomResource($Bid=null,$RoomName=null){
 
 		if($Bid == null || trim($Bid) == '')
