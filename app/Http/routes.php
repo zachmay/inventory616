@@ -38,9 +38,9 @@ Route::group([
 	Route::get('/buildings/{id}/rooms/{roomId}/inventory','FacilitiesManagementController@getRoomsInventoryItems');
 
 	Route::post('/buildings/','FacilitiesManagementController@postBuildingResource');
-	Route::post('/buildings/{tag}/rooms','FacilitiesManagementController@postRoomResource');
-	Route::put('/buildings/{tag}','FacilitiesManagementController@putBuildingUpdate');
-	Route::put('/buildings/{tag}/rooms/{num}','FacilitiesManagementController@putRoomUpdate');
+	Route::post('/buildings/{bid}/rooms','FacilitiesManagementController@postRoomResource');
+	Route::put('/buildings/{bid}','FacilitiesManagementController@putBuildingUpdate');
+	Route::put('/buildings/{bid}/rooms/{num}','FacilitiesManagementController@putRoomUpdate');
 	
 
 });
