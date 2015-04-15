@@ -273,7 +273,7 @@ class FacilitiesManagementController extends Controller {
 			} else {
 				return new Response(null,500);
 			}
-		} else
+		} else {
 			return new Response(null,304);
 		} 
 	}		
@@ -295,6 +295,7 @@ class FacilitiesManagementController extends Controller {
 			return new Response(null,500);
 		
 	}
+	
 	/* Delete methods for the room and building resources
 		perform resource validation and deletion
 	*/
