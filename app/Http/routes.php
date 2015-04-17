@@ -26,7 +26,6 @@ Route::group([
     Route::get('example', 'ExampleController@get');
     Route::post('example', 'ExampleController@post');
 
-    #add by peng@team4
     Route::get('inventory','InventoryCollectionController@index');
     Route::post('inventory','InventoryCollectionController@store');
     Route::get('inventory/{tag}','InventoryController2@show');
@@ -34,7 +33,7 @@ Route::group([
     Route::delete('inventory/{tag}','InventoryController2@destroy');
 
     Route::get('report/reconciliation','ReportController@getUnchecked');
-    Route::get('report/by-type','ReportController2@getItemByType');
+    Route::get('report/by-type','ReportController@getItemsByType');
 
     Route::get('inventory-types','ItemTypeController@index');
 

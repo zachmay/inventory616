@@ -13,13 +13,10 @@ use Illuminate\Support\Facades\Schema;
 
 class ReportController extends Controller {
 
-
-
 	/**
-	 * Display the specified resource.
+	 * Retrieve the item that havn't been checked in by specified date
 	 *
-	 * @param  int  $tag
-	 * @return Json found $item
+	 * @return Json/CSV unchecked items 
 	 */
 	public function getUnchecked()
 	{
@@ -59,7 +56,7 @@ class ReportController extends Controller {
 			return $unchecked;
 		}else
 		{
-			//join tale to flatten the result set
+			//join tables to flatten the result set
 			$unchecked=DB::table('buildings')
 				->join('rooms','buildings.id','=', 'rooms.building_id')
 				->join('check_ins','rooms.id','=','check_ins.room_id')
@@ -73,6 +70,7 @@ class ReportController extends Controller {
 				->get();
 
 
+				//build csv 
 				$csvText = "";
 
 				// build the header 
@@ -86,22 +84,105 @@ class ReportController extends Controller {
 			
 					foreach($row as $col)
 						$row_array[] = '"'.strtr($col, '"', '\"').'"';
-
-					
-
 					
 					$csvText .= implode(',', array_values($row_array)) . "\n";
-				}
-				
+				}			
 				
 				header('Content-type: text/csv');
 				header('Content-disposition: attachment;filename=report.csv');
 
+			return $csvText;
+
+		}
+	}
+
+
+	/**
+	 * Retrive a listing of the item by type.
+	 *
+	 *  @return Json/CSV items information
+	 */
+	public function getItemsByType()
+	{
+
+		//validation
+		$rules = array(
+			'format' => 'required|in:csv,json',
+			'type' => 'required',
+		);
+
+		$validator=Validator::make(Input::all(),$rules);
+		if ($validator->fails())
+			return  Response::json('Invalid Request',400);
+
+		$type=Input::get('type');
+		$format=Input::get('format');
+
+		//get all types
+		if(strtoupper($type)=='ALL')
+			$type_ids=DB::table('item_types')
+				->lists('id');
+		else
+			$type_ids=DB::table('item_types')
+				->Where('name',$type)
+				->lists('id');
+
+
+		//get the ids of items that are checked in most recently
+		$latest_ids=DB::table('check_ins')
+			->select(DB::raw('max(id) as id'))
+			->groupby('item_id')
+			->lists('id');
+
+
+		$items=DB::table('item_types')
+			->join('items','item_types.id','=','items.item_type_id')
+			->join('check_ins','check_ins.item_id','=','items.id')
+			->join('rooms','rooms.id','=','check_ins.room_id')
+			->join('buildings','buildings.id','=', 'rooms.building_id')
+			->whereIn('check_ins.id',$latest_ids)
+			->whereIn('item_types.id',$type_ids)
+			->orderBy('items.id')
+			->select('item_types.name as type',
+				'items.name as item_name',
+				'items.asset_tag',
+				'buildings.name as building_name',
+				'rooms.name as room_name',
+				'check_ins.updated_at')
+			->get();
+
+		if ($format=='json')
+			return $items;
+		else
+		{
+
+			//build csv 
+			$csvText = '';
+
+			// build the header 
+			$csvText .= 'type,'.'item,'.'tag,'.'building,'.'room,'.'date' . "\n";
+			
+			// build the body
+			foreach($items as $row) 
+			{
+
+				$row_array = array();
+		
+				foreach($row as $col)
+					$row_array[] = '"'.strtr($col, '"', '\"').'"';
+				
+				$csvText .= implode(',', array_values($row_array)) . "\n";
+			}			
+			
+			header('Content-type: text/csv');
+			header('Content-disposition: attachment;filename=report.csv');
 
 			return $csvText;
 
 
 		}
+
 	}
+
 
 }
