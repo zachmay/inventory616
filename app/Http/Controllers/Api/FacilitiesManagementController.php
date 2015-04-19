@@ -65,16 +65,19 @@ class FacilitiesManagementController extends Controller {
 
 	}
 
-	function getBuildingResource($BuildingName = null){
+	function getBuildingResource(Request $request){
+
+			$SearchString = $request->input('query');
 
 			try{
-				if(is_null($BuildingName)){
+				if(is_null($SearchString)){
 
 					$BuildingResource = Building::select()->get();
 				}
 				else{
 
-					$BuildingResource = Building::where('name',$BuildingName)->get();
+					$BuildingResource = Building::where('name','LIKE','%'.$SearchString.'%')
+											    ->orWhere('description','LIKE','%'.$SearchString.'%')->get();
 				}
 
 				$response = new Response($BuildingResource,200);
@@ -104,16 +107,21 @@ class FacilitiesManagementController extends Controller {
 		return $response;
 	}
 
-	function getBuildingRoomResource($Bid=null,$RoomName=null){
+	function getBuildingRoomResource($Bid=null,Request $request){
 
 		if($Bid == null || trim($Bid) == '')
 				return new Response(null,400);
 
-		try{
-				if(is_null($RoomName))
-					$RoomResource = Room::where('building_id',$Bid)->get();
+		try{	
+				$SearchString = $request->input('query');
+
+				if(!is_null($SearchString)){
+					$Building = Room::where('building_id',$Bid);
+					$RoomResource = $Building->where('name','LIKE','%'.$SearchString.'%')
+									         ->orWhere('description','LIKE','%'.$SearchString.'%')->get();
+				}
 				else
-					$RoomResource = Room::where('building_id',$Bid)->where('name',$RoomName)->get();
+					$RoomResource = Room::where('building_id',$Bid)->get();
 				$response = new Response($RoomResource,200);
 
 		}catch(ModelNotFoundException $e) {
@@ -320,4 +328,4 @@ class FacilitiesManagementController extends Controller {
 			return new Response(null,500);
 	}
 
-}
+//}
