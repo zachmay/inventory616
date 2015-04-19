@@ -23,23 +23,23 @@ class FacilitiesManagementController extends Controller {
 	 */ 
 	function getRoomsInventoryItems($Bid = null, $RoomId = null) {
 			
-		if($Bid == null || trim($Bid) == '' || $RoomId =='' || trim($RoomId) =='')
+		if($Bid == null || trim($Bid) == '' || $RoomId =='' || trim($RoomId) =='') //check if Building Id Or RoomId is null/empty, if so return 400 error
 			return new Response(null,400);
 		try{
 
-			$result = Room::where('id',$RoomId)
+			$result = Room::where('id',$RoomId)	//get rooms where building id = $bid
 				->where('building_id',$Bid)->firstOrFail();
 
-			if($result->count() > 0){
-				$itemIdArray = checkIn::select()->where('room_id',$RoomId)->get();
-				$items = array();
-				foreach($itemIdArray as $value){
-					$tempId = $value["item_id"];
-					$items[] = Item::where('id',$tempId)->firstOrFail();
+			//if($result->count() > 0){ //if result is not zero
+				$itemIdArray = checkIn::select()->where('room_id',$RoomId)->get(); //get rooms from check in table
+				$items = array(); //convert to array
+				foreach($itemIdArray as $value){ //get each item info
+					$tempId = $value["item_id"]; //get item id
+					$items[] = Item::where('id',$tempId)->firstOrFail(); //get item info
 				}
 
 				$response = new Response($items,200);
-			}
+			//}
 
 		} catch(ModelNotFoundException $e) {
 			// if not found, set response code to 404 not found
@@ -60,17 +60,17 @@ class FacilitiesManagementController extends Controller {
 	function getRoomsResource($Bid=null, $RoomId=null){
 		
 
-			if($Bid == null || trim($Bid) == '' || $RoomId =='' || trim($RoomId) =='')
+			if($Bid == null || trim($Bid) == '' || $RoomId =='' || trim($RoomId) =='') //rneturn 400 errors if $Bid or $RoomId is empty/null
 				return new Response(null,400);
 
 			try{
 				//testing with bid = 13, item = 11
-				$RoomResource = Room::where('id',$RoomId)->where('building_id',$Bid)->firstOrFail();
-				$response = new Response($RoomResource,200);
+				$RoomResource = Room::where('id',$RoomId)->where('building_id',$Bid)->firstOrFail(); //get rooms info from building id and room id
+				$response = new Response($RoomResource,200); //return successful
 
 			}catch(ModelNotFoundException $e) {
 			// if not found, set response code to 404 not found
-				$response = new Response(null,404);
+				$response = new Response(null,404); 
 			}
 			return $response;
 
@@ -90,20 +90,20 @@ class FacilitiesManagementController extends Controller {
 	 */ 
 	function getBuildingResource(Request $request){
 
-			$SearchString = $request->input('query');
+			$SearchString = $request->input('query'); //get query string
 
 			try{
-				if(is_null($SearchString)){
+				if(is_null($SearchString)){ //if query is empty
 
 					$BuildingResource = Building::select()->get();
 				}
-				else{
+				else{ //else filter the result
 
-					$BuildingResource = Building::where('name','LIKE','%'.$SearchString.'%')
+					$BuildingResource = Building::where('name','LIKE','%'.$SearchString.'%') //get building based on building name or description
 											    ->orWhere('description','LIKE','%'.$SearchString.'%')->get();
 				}
 
-				$response = new Response($BuildingResource,200);
+				$response = new Response($BuildingResource,200); //return successful
 
 			}catch(ModelNotFoundException $e) {
 			// if not found, set response code to 404 not found
@@ -123,12 +123,12 @@ class FacilitiesManagementController extends Controller {
 	 */ 
 	function getBuildingResourceOnId($Bid = null){
 
-		if($Bid == null || trim($Bid) == '')
+		if($Bid == null || trim($Bid) == '')  //return 400 error if $Bid is null empty
 				return new Response(null,400);
 
 		try{
 
-				$BuildingResource = Building::where('id',$Bid)->firstOrFail();
+				$BuildingResource = Building::where('id',$Bid)->firstOrFail(); //get build id and info
 				$response = new Response($BuildingResource,200);
 
 		}catch(ModelNotFoundException $e) {
@@ -148,19 +148,20 @@ class FacilitiesManagementController extends Controller {
 	 * 
 	 */ 
 	function getBuildingRoomResource($Bid=null,Request $request){
-		if($Bid == null || trim($Bid) == '')
+
+		if($Bid == null || trim($Bid) == '') //return 400 error if $Bid is empty/null 
 				return new Response(null,400);
 
 		try{	
-				$SearchString = $request->input('query');
+				$SearchString = $request->input('query'); //get query for filtering
 
-				if(!is_null($SearchString)){
-					$Building = Room::where('building_id',$Bid);
+				if(!is_null($SearchString)){ //if it's not empty
+					$Building = Room::where('building_id',$Bid); //filter the result based on name and description
 					$RoomResource = $Building->where('name','LIKE','%'.$SearchString.'%')
 									         ->orWhere('description','LIKE','%'.$SearchString.'%')->get();
 				}
 				else
-					$RoomResource = Room::where('building_id',$Bid)->get();
+					$RoomResource = Room::where('building_id',$Bid)->get(); //return all
 				$response = new Response($RoomResource,200);
 
 		}catch(ModelNotFoundException $e) {
