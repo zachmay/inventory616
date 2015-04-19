@@ -83,7 +83,7 @@ class FacilitiesManagementController extends Controller {
 	 * support a query parameter "search" that accepts a string by 
 	 * which results can be filtered.
 	 * 
-	 * Returns 200 OK on sucess.
+	 * Returns 200 OK on success.
 	 * 
 	 * TODO: Remove not found 404. Should just be empty list.
 	 * 
@@ -323,19 +323,28 @@ class FacilitiesManagementController extends Controller {
 		} else {
 			return new Response(null,304);
 		} 
-	}		
-	///
-	function deleteBuildings($rid = null){
-		if($rid == null || trim($rid) =='')
-			return new Response(null,404);
-		$building_r = Building::find($rid);
-		if(is_null($building_r))
+	}
+	
+	/* DELETE /buildings/:id
+     * 
+     * Deletes the building resource with the given building id.
+     * 
+     * Returns 200 OK on success.
+     * Returns 400 Bad Request on bad input.
+     * Returns 404 Not Found if buildingid or roomid does not exist.
+     * Returns 500 Internal Server Error.
+     */ 
+	function deleteBuildings($bid = null){
+		if($bid == null || trim($bid) =='')
 			return new Response(null,400);
-		$room_r = Room::where('building_id','=',$rid)->get();
+		$building_r = Building::find($bid);
+		if(is_null($building_r))
+			return new Response(null,404);
+		$room_r = Room::where('building_id','=',$bid)->get();
 		if(count($room_r) != 0){
 			return new Response(null,400);
 		}
-		$affected_rows = Building::where('id','=',$rid)->delete();
+		$affected_rows = Building::where('id','=',$bid)->delete();
 		if($affected_rows)
 			return new Response(null,200);
 		else
@@ -343,17 +352,24 @@ class FacilitiesManagementController extends Controller {
 		
 	}
 	
-	/* Delete methods for the room and building resources
-		perform resource validation and deletion
-	*/
+	/* DELETE /buildings/:buildingid/rooms/:roomid
+     * 
+     * Deletes the room resource with the given roomid and is 
+     * associated with the given buildingid.
+     * 
+     * Returns 200 OK on success.
+     * Returns 400 Bad Request on bad input.
+     * Returns 404 Not Found if buildingid or roomid does not exist.
+     * Returns 500 Internal Server Error.
+     */ 
 	function deleteRooms($bid = null, $rid = null){
 		if($rid == null || trim($rid) == '')
-			return new Response(null,404);
+			return new Response(null,400);
 		if($bid == null || trim($bid) == null)
-			return new Response(null,404);
+			return new Response(null,400);
 		$building_r = Building::find($bid);
 		if(is_null($building_r))
-			return new Response(null,400);
+			return new Response(null,404);
 		$room_r = Room::where('id','=',$rid)
 			->where('building_id','=',$bid)->get();
 		if(count($room_r) == 0)
