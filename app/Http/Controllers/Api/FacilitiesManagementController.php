@@ -13,37 +13,50 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class FacilitiesManagementController extends Controller {
 
-	//get collection of items from id and room id in checkIn table
-	// GET /buildings/:id/rooms/:roomid/inventory
+	/* GET /buildings/:id/rooms/:roomid/inventory
+	 * 
+	 * Returns a collection of items for the given building and room id.
+	 * 
+	 * Returns 200 OK on success.
+	 * Returns 400 Bad Request on bad input.
+	 * Returns 404 Not Found if building id or room id not found.
+	 */ 
 	function getRoomsInventoryItems($Bid = null, $RoomId = null) {
 			
-			
-			if($Bid == null || trim($Bid) == '' || $RoomId =='' || trim($RoomId) =='')
-				return new Response(null,400);
-			try{
+		if($Bid == null || trim($Bid) == '' || $RoomId =='' || trim($RoomId) =='')
+			return new Response(null,400);
+		try{
 
-				$result = Room::where('id',$RoomId)->where('building_id',$Bid)->firstOrFail();
-			
-				if($result->count() > 0){
-					$itemIdArray = checkIn::select()->where('room_id',$RoomId)->get();
-					$items = array();
-					foreach($itemIdArray as $value){
-						$tempId = $value["item_id"];
-						$items[] = Item::where('id',$tempId)->firstOrFail();
-					}
+			$result = Room::where('id',$RoomId)
+				->where('building_id',$Bid)->firstOrFail();
 
-					$response = new Response($items,200);
+			if($result->count() > 0){
+				$itemIdArray = checkIn::select()->where('room_id',$RoomId)->get();
+				$items = array();
+				foreach($itemIdArray as $value){
+					$tempId = $value["item_id"];
+					$items[] = Item::where('id',$tempId)->firstOrFail();
 				}
-	
-			} catch(ModelNotFoundException $e) {
-			// if not found, set response code to 404 not found
-				$response = new Response(null,404);
+
+				$response = new Response($items,200);
 			}
-			return $response;
+
+		} catch(ModelNotFoundException $e) {
+			// if not found, set response code to 404 not found
+			$response = new Response(null,404);
+		}
+		return $response;
 	}
 
-	//get info about a room resouce
-	// GET /buildings/:buildingid/rooms/:roomid
+	/* GET /buildings/:buildingid/rooms/:roomid
+	 * 
+	 * An individual room resource associated with the specified 
+	 * building resource.
+	 * 
+	 * Returns 200 OK on success.
+	 * Returns 400 Bad Request on bad input.
+	 * Returns 404 Not Found if building id or room id not found.
+	 */
 	function getRoomsResource($Bid=null, $RoomId=null){
 		
 
@@ -63,7 +76,17 @@ class FacilitiesManagementController extends Controller {
 
 	}
 
-	// GET /buildings
+	/* GET /buildings
+	 * 
+	 * Retrieve a listing of all existing building resources. Should 
+	 * support a query parameter "search" that accepts a string by 
+	 * which results can be filtered.
+	 * 
+	 * Returns 200 OK on sucess.
+	 * 
+	 * TODO: Remove not found 404. Should just be empty list.
+	 * 
+	 */ 
 	function getBuildingResource($BuildingName = null){
 
 			try{
@@ -86,7 +109,14 @@ class FacilitiesManagementController extends Controller {
 
 	}
 
-	// GET /buildings/:id
+	/* GET /buildings/:id
+	 * 
+	 * Retrieve a representation of the specified resource.
+	 * 
+	 * Returns 200 OK on success.
+	 * Returns 400 Bad Request if bad input..
+	 * Returns 404 Not Found if building id not found.
+	 */ 
 	function getBuildingResourceOnId($Bid = null){
 
 		if($Bid == null || trim($Bid) == '')
@@ -104,7 +134,14 @@ class FacilitiesManagementController extends Controller {
 		return $response;
 	}
 
-	// GET /buildings/:id/rooms
+	/* GET /buildings/:id/rooms
+	 * Retrieve a listing of all existing room resources associated 
+	 * with the specified building. Should support a query parameter 
+	 * "search" that accepts a string by which results can be filtered.
+	 * 
+	 * Returns 200 OK 
+	 * 
+	 */ 
 	function getBuildingRoomResource($Bid=null,$RoomName=null){
 
 		if($Bid == null || trim($Bid) == '')
@@ -183,7 +220,7 @@ class FacilitiesManagementController extends Controller {
 	 * The body should contain any of the following fields: name, description.
 	 * 
 	 * Body should include name and description.
-	 
+	 * 
 	 * Returns 200 OK on success.
 	 * Returns 304 Not Modified if no changes made.
 	 * Returns 400 Bad Request on bad input.
