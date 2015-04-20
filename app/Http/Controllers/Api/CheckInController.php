@@ -7,6 +7,7 @@ use App\Building;
 use App\CheckIn;
 use Illuminate\Http\Response;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Input;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class CheckInController extends Controller {
@@ -175,11 +176,18 @@ class CheckInController extends Controller {
 			//			]);
 			// $arr = CheckIn::where('room_id','=',$room_)
 			//		->where('item_id','=',$item['id']);
-			Item::findOrFail($room_id);
+			//Item::findOrFail($room_id);
 			
+			$items = Item::where('asset_tag','=',$tag)->firstOrFail();
+			if(count($items) == 0)
+				return new Response(null,404);
+			$rooms = Room::find($room_id);
+			
+			if(count($rooms) == 0)
+				return new Response(null,400);
 			$checkin = new CheckIn();
 			$checkin->room_id = $room_id;
-			$checkin->item_id = $tag;
+			$checkin->item_id = $items->id;
 			
 			if($checkin->save()) {
 				return new Response(null,200);
