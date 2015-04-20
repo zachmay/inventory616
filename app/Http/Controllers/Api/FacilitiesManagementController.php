@@ -238,7 +238,7 @@ class FacilitiesManagementController extends Controller {
 	 * Returns 500 Internal Server Error on commit error.
 	 */
 	function putBuildingUpdate($bid = null, Request $request){
-	    if($tag == null || trim($bid) == '')
+	    if($bid == null || trim($bid) == '')
 			return new Response(null,400);
 		
 		try {
@@ -287,7 +287,7 @@ class FacilitiesManagementController extends Controller {
 		
 		if($bid == null || trim($bid) == '')
 			return new Response(null,400);
-		if($num == null || trim($rid) == '')
+		if($rid == null || trim($rid) == '')
 			return new Response(null,400);
 		
 		try {
@@ -316,11 +316,11 @@ class FacilitiesManagementController extends Controller {
 		}
 		
 		if($set_update) {
-			if($resource->save()) {
+			//if($resource->save()) {
 				return new Response(null,200);
-			} else {
-				return new Response(null,500);
-			}
+		//	} else {
+			//	return new Response(null,500);
+			//}
 		} else {
 			return new Response(null,304);
 		} 
