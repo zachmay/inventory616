@@ -13,70 +13,97 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class FacilitiesManagementController extends Controller {
 
-	//get collection of items from id and room id in checkIn table
-	// GET /buildings/:id/rooms/:roomid/inventory
+	/* GET /buildings/:id/rooms/:roomid/inventory
+	 * 
+	 * Returns a collection of items for the given building and room id.
+	 * 
+	 * Returns 200 OK on success.
+	 * Returns 400 Bad Request on bad input.
+	 * Returns 404 Not Found if building id or room id not found.
+	 */ 
 	function getRoomsInventoryItems($Bid = null, $RoomId = null) {
 			
-			
-			if($Bid == null || trim($Bid) == '' || $RoomId =='' || trim($RoomId) =='')
-				return new Response(null,400);
-			try{
+		if($Bid == null || trim($Bid) == '' || $RoomId =='' || trim($RoomId) =='') //check if Building Id Or RoomId is null/empty, if so return 400 error
+			return new Response(null,400);
+		try{
 
-				$result = Room::where('id',$RoomId)->where('building_id',$Bid)->firstOrFail();
-			
-				if($result->count() > 0){
-					$itemIdArray = checkIn::select()->where('room_id',$RoomId)->get();
-					$items = array();
-					foreach($itemIdArray as $value){
-						$tempId = $value["item_id"];
-						$items[] = Item::where('id',$tempId)->firstOrFail();
-					}
+			$result = Room::where('id',$RoomId)	//get rooms where building id = $bid
+				->where('building_id',$Bid)->firstOrFail();
 
-					$response = new Response($items,200);
+			//if($result->count() > 0){ //if result is not zero
+				$itemIdArray = checkIn::select()->where('room_id',$RoomId)->get(); //get rooms from check in table
+				$items = array(); //convert to array
+				foreach($itemIdArray as $value){ //get each item info
+					$tempId = $value["item_id"]; //get item id
+					$items[] = Item::where('id',$tempId)->firstOrFail(); //get item info
 				}
-	
-			} catch(ModelNotFoundException $e) {
+
+				$response = new Response($items,200);
+			//}
+
+		} catch(ModelNotFoundException $e) {
 			// if not found, set response code to 404 not found
-				$response = new Response(null,404);
-			}
-			return $response;
+			$response = new Response(null,404);
+		}
+		return $response;
 	}
 
-	//get info about a room resouce
-	// GET /buildings/:buildingid/rooms/:roomid
+	/* GET /buildings/:buildingid/rooms/:roomid
+	 * 
+	 * An individual room resource associated with the specified 
+	 * building resource.
+	 * 
+	 * Returns 200 OK on success.
+	 * Returns 400 Bad Request on bad input.
+	 * Returns 404 Not Found if building id or room id not found.
+	 */
 	function getRoomsResource($Bid=null, $RoomId=null){
 		
 
-			if($Bid == null || trim($Bid) == '' || $RoomId =='' || trim($RoomId) =='')
+			if($Bid == null || trim($Bid) == '' || $RoomId =='' || trim($RoomId) =='') //rneturn 400 errors if $Bid or $RoomId is empty/null
 				return new Response(null,400);
 
 			try{
 				//testing with bid = 13, item = 11
-				$RoomResource = Room::where('id',$RoomId)->where('building_id',$Bid)->firstOrFail();
-				$response = new Response($RoomResource,200);
+				$RoomResource = Room::where('id',$RoomId)->where('building_id',$Bid)->firstOrFail(); //get rooms info from building id and room id
+				$response = new Response($RoomResource,200); //return successful
 
 			}catch(ModelNotFoundException $e) {
 			// if not found, set response code to 404 not found
-				$response = new Response(null,404);
+				$response = new Response(null,404); 
 			}
 			return $response;
 
 	}
 
-	// GET /buildings
-	function getBuildingResource($BuildingName = null){
+	
+	/* GET /buildings
+	 * 
+	 * Retrieve a listing of all existing building resources. Should 
+	 * support a query parameter "search" that accepts a string by 
+	 * which results can be filtered.
+	 * 
+	 * Returns 200 OK on success.
+	 * 
+	 * TODO: Remove not found 404. Should just be empty list.
+	 * 
+	 */ 
+	function getBuildingResource(Request $request){
+
+			$SearchString = $request->input('query'); //get query string
 
 			try{
-				if(is_null($BuildingName)){
+				if(is_null($SearchString)){ //if query is empty
 
 					$BuildingResource = Building::select()->get();
 				}
-				else{
+				else{ //else filter the result
 
-					$BuildingResource = Building::where('name',$BuildingName)->get();
+					$BuildingResource = Building::where('name','LIKE','%'.$SearchString.'%') //get building based on building name or description
+											    ->orWhere('description','LIKE','%'.$SearchString.'%')->get();
 				}
 
-				$response = new Response($BuildingResource,200);
+				$response = new Response($BuildingResource,200); //return successful
 
 			}catch(ModelNotFoundException $e) {
 			// if not found, set response code to 404 not found
@@ -86,15 +113,22 @@ class FacilitiesManagementController extends Controller {
 
 	}
 
-	// GET /buildings/:id
+	/* GET /buildings/:id
+	 * 
+	 * Retrieve a representation of the specified resource.
+	 * 
+	 * Returns 200 OK on success.
+	 * Returns 400 Bad Request if bad input..
+	 * Returns 404 Not Found if building id not found.
+	 */ 
 	function getBuildingResourceOnId($Bid = null){
 
-		if($Bid == null || trim($Bid) == '')
+		if($Bid == null || trim($Bid) == '')  //return 400 error if $Bid is null empty
 				return new Response(null,400);
 
 		try{
 
-				$BuildingResource = Building::where('id',$Bid)->firstOrFail();
+				$BuildingResource = Building::where('id',$Bid)->firstOrFail(); //get build id and info
 				$response = new Response($BuildingResource,200);
 
 		}catch(ModelNotFoundException $e) {
@@ -104,17 +138,30 @@ class FacilitiesManagementController extends Controller {
 		return $response;
 	}
 
-	// GET /buildings/:id/rooms
-	function getBuildingRoomResource($Bid=null,$RoomName=null){
 
-		if($Bid == null || trim($Bid) == '')
+	/* GET /buildings/:id/rooms
+	 * Retrieve a listing of all existing room resources associated 
+	 * with the specified building. Should support a query parameter 
+	 * "search" that accepts a string by which results can be filtered.
+	 * 
+	 * Returns 200 OK 
+	 * 
+	 */ 
+	function getBuildingRoomResource($Bid=null,Request $request){
+
+		if($Bid == null || trim($Bid) == '') //return 400 error if $Bid is empty/null 
 				return new Response(null,400);
 
-		try{
-				if(is_null($RoomName))
-					$RoomResource = Room::where('building_id',$Bid)->get();
+		try{	
+				$SearchString = $request->input('query'); //get query for filtering
+
+				if(!is_null($SearchString)){ //if it's not empty
+					$Building = Room::where('building_id',$Bid); //filter the result based on name and description
+					$RoomResource = $Building->where('name','LIKE','%'.$SearchString.'%')
+									         ->orWhere('description','LIKE','%'.$SearchString.'%')->get();
+				}
 				else
-					$RoomResource = Room::where('building_id',$Bid)->where('name',$RoomName)->get();
+					$RoomResource = Room::where('building_id',$Bid)->get(); //return all
 				$response = new Response($RoomResource,200);
 
 		}catch(ModelNotFoundException $e) {
@@ -183,7 +230,7 @@ class FacilitiesManagementController extends Controller {
 	 * The body should contain any of the following fields: name, description.
 	 * 
 	 * Body should include name and description.
-	 
+	 * 
 	 * Returns 200 OK on success.
 	 * Returns 304 Not Modified if no changes made.
 	 * Returns 400 Bad Request on bad input.
@@ -277,19 +324,28 @@ class FacilitiesManagementController extends Controller {
 		} else {
 			return new Response(null,304);
 		} 
-	}		
-	///
-	function deleteBuildings($rid = null){
-		if($rid == null || trim($rid) =='')
-			return new Response(null,404);
-		$building_r = Building::find($rid);
-		if(is_null($building_r))
+	}
+	
+	/* DELETE /buildings/:id
+     * 
+     * Deletes the building resource with the given building id.
+     * 
+     * Returns 200 OK on success.
+     * Returns 400 Bad Request on bad input.
+     * Returns 404 Not Found if buildingid or roomid does not exist.
+     * Returns 500 Internal Server Error.
+     */ 
+	function deleteBuildings($bid = null){
+		if($bid == null || trim($bid) =='')
 			return new Response(null,400);
-		$room_r = Room::where('building_id','=',$rid)->get();
+		$building_r = Building::find($bid);
+		if(is_null($building_r))
+			return new Response(null,404);
+		$room_r = Room::where('building_id','=',$bid)->get();
 		if(count($room_r) != 0){
 			return new Response(null,400);
 		}
-		$affected_rows = Building::where('id','=',$rid)->delete();
+		$affected_rows = Building::where('id','=',$bid)->delete();
 		if($affected_rows)
 			return new Response(null,200);
 		else
@@ -297,17 +353,24 @@ class FacilitiesManagementController extends Controller {
 		
 	}
 	
-	/* Delete methods for the room and building resources
-		perform resource validation and deletion
-	*/
+	/* DELETE /buildings/:buildingid/rooms/:roomid
+     * 
+     * Deletes the room resource with the given roomid and is 
+     * associated with the given buildingid.
+     * 
+     * Returns 200 OK on success.
+     * Returns 400 Bad Request on bad input.
+     * Returns 404 Not Found if buildingid or roomid does not exist.
+     * Returns 500 Internal Server Error.
+     */ 
 	function deleteRooms($bid = null, $rid = null){
 		if($rid == null || trim($rid) == '')
-			return new Response(null,404);
+			return new Response(null,400);
 		if($bid == null || trim($bid) == null)
-			return new Response(null,404);
+			return new Response(null,400);
 		$building_r = Building::find($bid);
 		if(is_null($building_r))
-			return new Response(null,400);
+			return new Response(null,404);
 		$room_r = Room::where('id','=',$rid)
 			->where('building_id','=',$bid)->get();
 		if(count($room_r) == 0)
