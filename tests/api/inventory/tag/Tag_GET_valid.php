@@ -11,8 +11,7 @@ use App\User;
 
 class Tag_GET_valid extends TestCase {
 
-	/**
-/*inventory/tag
+/* /inventory/tag
 Description: test get method when there exists some items.
 Assumption: There exists some items.
 URL: http://192.168.33.99/api//inventory/tag
@@ -20,10 +19,10 @@ Calling Method: GET
 Anticipated Result Code: 200
 Anticipated Result Datatype: JSON or HTML.
 Anticipated Result Data: Any
-Test Code Source: tests/api/ /inventory/tag/tag_GET.php; */
-
-	  *
-	 **/
+Test Code Source: tests/api/ /inventory/tag/tag_GET.php;  */
+	 
+	 
+	 
 	private $typetest;
 	private $invtarr_existing;
 
