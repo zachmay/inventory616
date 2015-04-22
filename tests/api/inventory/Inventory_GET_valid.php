@@ -36,10 +36,10 @@ Test Code Source: tests/api/inventory/inventory_GET.php */
 		if(is_null($this->typetest))
      		$this->typetest = ItemType::create(['name' => 'Computer']);
 
-		$sel = Item::where('asset_tag', '=', 'test_tag')->first();
+		$sel = Item::where('true')->get();
 		if(is_null($sel))
 		{
-			$this->invt = [
+			$invt = [
 		        'asset_tag'          => 'test_tag',
 		        'name'               => 'test_comp',
 		        'funding_source'     => 'test_src',
@@ -54,8 +54,10 @@ Test Code Source: tests/api/inventory/inventory_GET.php */
 		        'student_flag'       => false,
 		        'institution_flag'   => false
 		    ];
-			$sel = Item::create($this->invtarr_beforeModified);
+		    Item::create($invt);
+		    $sel = Item::where('true')->get();
 		}
+		$this->invt = $sel;
 
 	}
 
@@ -94,7 +96,8 @@ Test Code Source: tests/api/inventory/inventory_GET.php */
 		// convert json to an array rather than an object.
 		$body = json_decode($response->getContent(), true);
 		// confirm the content is a correct answer.
-		echo($body);
+		fwrite(STDOUT, $body . "\n");
+		//echo($body);
 		$this->assertEquals($body, $this->invt());
 	}
 
