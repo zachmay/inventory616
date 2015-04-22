@@ -11,7 +11,9 @@ use App\User;
 
 class Inventory_GET_valid extends TestCase {
 
-/* Description: Retrieve a listing of all existing inventory items. 
+/* 
+/inventory
+Description: Retrieve a listing of all existing inventory items. 
 Assumption: There exists some items.
 URL: http://192.168.33.99/api/inventory
 Calling Method: GET
