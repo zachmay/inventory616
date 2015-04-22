@@ -37,9 +37,9 @@ Test Code Source: tests/api/inventory/inventory_GET.php */
 		if(is_null($this->typetest))
      		$this->typetest = ItemType::create(['name' => 'Computer']);
 
-		$sel = Item::where('name', '=', 'test_comp');
-		if(isset($sel->first()))
-			$sel->delete();
+		$sel = Item::where('true')->get();
+		if(isset($sel))
+			Item::where('true')->delete();
 	}
 
 	public function tearDown()
