@@ -11,7 +11,9 @@ use App\User;
 
 class Tag_GET_invalid extends TestCase {
 
-/* Description: test get method when the specified items are not existing.
+/* 
+/inventory/tag
+Description: test get method when the specified items are not existing.
 Assumption: DELETE method works..
 URL: http://192.168.33.99/api//inventory/tag
 Calling Method: GET
